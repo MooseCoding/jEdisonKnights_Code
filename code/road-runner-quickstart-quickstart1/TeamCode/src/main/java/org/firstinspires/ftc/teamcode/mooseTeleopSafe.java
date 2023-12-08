@@ -20,6 +20,17 @@ public class mooseTeleopSafe extends LinearOpMode {
 
     int aprilTheta;
     int aprilDistance;
+    //only temporary for code adjustment 
+    private int hPA =350;
+    private int s1PA = 20;
+    private int s2PA = 403;
+    private int s3PA = 2449;
+    private int hAM = -50;
+    private int s1AM = -19;
+    private int s2AM = -60;
+    private int s3AM =185;
+    
+
 
     IMU imu;//x-axis rotation = , y-axis rotation = , z-axis rotation
 
@@ -261,10 +272,10 @@ public class mooseTeleopSafe extends LinearOpMode {
                     if (armReset) {
                         r1.setPosition(0.126);
                         r2.setPosition(0.13);
-                    pA.setTargetPosition(350);
+                    pA.setTargetPosition(hPA);
                     pA.setPower(0.6);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    am.setTargetPosition(-50);
+                    am.setTargetPosition(hAM);
                     am.setPower(0.1);
                     am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armReset = false;
@@ -272,15 +283,15 @@ public class mooseTeleopSafe extends LinearOpMode {
                     break;
                 case 0:
                     if (!armReset) {
-                        pA.setTargetPosition(20);
+                        pA.setTargetPosition(s1PA);
                         pA.setPower(0.5);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        am.setTargetPosition(-19);
+                        am.setTargetPosition(s1AM);
                         am.setPower(0.2);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armReset = true;
                     }
-                    if (am.getCurrentPosition() <= -16 && pA.getCurrentPosition() >= 25) {
+                    if (am.getCurrentPosition() <= s1AM+1 && pA.getCurrentPosition() >= s1PA-1) {
                         arm++;
                         armReset = false;
                     }
@@ -293,31 +304,31 @@ public class mooseTeleopSafe extends LinearOpMode {
                         r2.setPosition(0.05);
                         t = getRuntime();
                         while(getRuntime() < 0.3 + t) {}
-                        pA.setTargetPosition(403);
+                        pA.setTargetPosition(s2PA);
                         pA.setPower(0.4);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        am.setTargetPosition(-60);
+                        am.setTargetPosition(s2AM);
                         am.setPower(0.2);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armReset = true;
                     }
-                    if (pA.getCurrentPosition() >= 395 && am.getCurrentPosition() <= -50 ) {
+                    if (pA.getCurrentPosition() >= s2PA-1 && am.getCurrentPosition() <= s2PA+1) {
                         arm++;
                     }
                     break;
                 case 2:
                     if (armReset) {
 
-                        pA.setTargetPosition(2449);
+                        pA.setTargetPosition(s3PA);
                         pA.setPower(0.6);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-                        am.setTargetPosition(185);
+                        am.setTargetPosition(s3AM);
                         am.setPower(0.2);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                    if (pA.getCurrentPosition() >= 2410 && am.getCurrentPosition() >= 180 ) {
+                    if (pA.getCurrentPosition() >= s3PA-1 && am.getCurrentPosition() >= s3AM-1 ) {
                         arm++;
                     }
                     break;
