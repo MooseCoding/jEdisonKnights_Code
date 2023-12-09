@@ -170,12 +170,12 @@ public class blueBottom extends LinearOpMode {
 
         switch (prop) {
             case 0:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 4))
-                        .forward(20)
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 16))
+                        .forward(23)
                         .displacementMarker(() -> {
                             spitPixel();
                         })
-                        .splineTo(new Vector2d(25, 0), Math.toRadians(0))
+                        .splineTo(new Vector2d(23, 0), Math.toRadians(0))
                         .build());
                 break;
             case 1:
@@ -184,31 +184,32 @@ public class blueBottom extends LinearOpMode {
                         .displacementMarker(() -> {
                             spitPixel();
                         })
+                        .back(2)
                         .build());
 
                 break;
             case 2:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 4))
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 16))
                         .forward(20)
                         .displacementMarker(() -> {
                             spitPixel();
                         })
-                        .splineTo(new Vector2d(25, 0), Math.toRadians(0))
+                        .splineTo(new Vector2d(23, 0), Math.toRadians(0))
                         .build());
 
                 break;
         }
         d.turn(-Math.PI / 2);
         d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
-                .forward(90)
+                .forward(87)
                 .build());
         d.turn(Math.PI);
         d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
                 .displacementMarker(() -> {
                     dropPixel();
                 })
-                .strafeLeft(14)
-                .forward(8)
+                .strafeLeft(6)
+                .forward(4)
                 .build());
     }
 
