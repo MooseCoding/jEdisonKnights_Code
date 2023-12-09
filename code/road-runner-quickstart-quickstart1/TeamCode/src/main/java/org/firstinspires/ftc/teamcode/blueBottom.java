@@ -143,16 +143,11 @@ public class blueBottom extends LinearOpMode {
 
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
-
-
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
-        d.setPoseEstimate(new Pose2d(0,0,Math.PI));
-
-
 
         waitForStart();
 
-
+        /*
         while(r == null || r.getConfidence() < 0.8 && getRuntime() < 1.5) {
             r = tfod.getRecognitions().get(0);
         }
@@ -162,55 +157,63 @@ public class blueBottom extends LinearOpMode {
         else {
             propTheta = r.estimateAngleToObject(AngleUnit.DEGREES);
 
-            if (propTheta >= 70 && propTheta <= 130)
+            if (propTheta <= 20 && propTheta >= -20)
                 prop = 1;
             else
                 prop = 2;
-        }
+        }*/
+        prop = 1;
 
         switch (prop) {
             case 0:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 16))
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(-35, 60), -(Math.PI / 2))
                         .forward(23)
-                        .displacementMarker(() -> {
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
-                        .splineTo(new Vector2d(23, 0), Math.toRadians(0))
+                        .splineTo(new Vector2d(19, -37), Math.PI/2)
                         .build());
                 break;
+           /* case 1:
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(-35, 60), 0)
+                        .forward(23)
+                                .build());
+
+                            spitPixel();
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
+                        .splineTo(new Vector2d(-16, 35), 0)
+                        .forward(65)
+                        .build());
+                d.turn(Math.PI);
+                dropPixel();
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
+                        .strafeLeft(26)
+                        .back(10)
+                        .build());
+                break;
+
+            */
             case 1:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d())
-                        .forward(25)
-                        .displacementMarker(() -> {
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(34, -72), Math.PI/2)
+                        .forward(17)
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
-                        .back(2)
+                        .splineTo(new Vector2d(23, 0), Math.PI/2)
                         .build());
 
                 break;
             case 2:
                 d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 16))
-                        .forward(20)
-                        .displacementMarker(() -> {
+                        .forward(17)
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
-                        .splineTo(new Vector2d(23, 0), Math.toRadians(0))
+                        .splineTo(new Vector2d(23, 0), Math.PI/2)
                         .build());
 
                 break;
         }
-        d.turn(-Math.PI / 2);
-        d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
-                .forward(87)
-                .build());
-        d.turn(Math.PI);
-        d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
-                .displacementMarker(() -> {
-                    dropPixel();
-                })
-                .strafeLeft(6)
-                .forward(4)
-                .build());
     }
 
 }

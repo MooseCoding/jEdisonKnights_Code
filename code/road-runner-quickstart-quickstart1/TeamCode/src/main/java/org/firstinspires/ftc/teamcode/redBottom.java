@@ -31,9 +31,9 @@ public class redBottom extends LinearOpMode {
     private double propTheta = 0;
 
     private void spitPixel() {
-        in.setPower(-0.05);
+        in.setPower(-0.1);
         double t = getRuntime();
-        while (t + 0.2 > getRuntime()){}
+        while (t + 1 > getRuntime()){}
     }
 
     private void dropPixel() {
@@ -80,7 +80,7 @@ public class redBottom extends LinearOpMode {
         }
 
 
-    private static final String TFOD_MODEL_ASSET = "blueModel.tflite";
+    private static final String TFOD_MODEL_ASSET = "redBottom.tflite";
     private TfodProcessor tfod;
 
     private static final String[] LABELS = {"teamProp"};
@@ -146,13 +146,10 @@ public class redBottom extends LinearOpMode {
 
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
-        d.setPoseEstimate(new Pose2d(0,0,0));
-
-
 
         waitForStart();
 
-
+            /*
             while(r == null || r.getConfidence() < 0.8 && getRuntime() < 3) {
                 r = tfod.getRecognitions().get(0);
             }
@@ -162,54 +159,51 @@ public class redBottom extends LinearOpMode {
             else {
             propTheta = r.estimateAngleToObject(AngleUnit.DEGREES);
 
-            if (propTheta >= 70 && propTheta <= 130)
+            if (propTheta <= 20 && propTheta >= -20)
                 prop = 1;
             else
                 prop = 2;
             }
-
+            */
+            prop = 1;
             switch (prop) {
                 case 0:
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 4))
-                            .forward(20)
-                            .displacementMarker(() -> {
+                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 16))
+                            .forward(17)
+                            .addDisplacementMarker(() -> {
                                 spitPixel();
                             })
-                            .splineTo(new Vector2d(25, 0), Math.toRadians(0))
+                            .splineTo(new Vector2d(18, 38), Math.toRadians(-Math.PI/2))
                             .build());
                     break;
                 case 1:
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d())
-                            .forward(25)
-                            .displacementMarker(() -> {
-                                spitPixel();
-                            })
+                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(-35, -60), 0)
+                            .forward(23)
                             .build());
 
+                    spitPixel();
+                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
+                            .splineTo(new Vector2d(-16, -34), Math.PI/2)
+                            .forward(65)
+                            .build());
+                    d.turn(Math.PI);
+                    dropPixel();
+                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
+                            .strafeRight(26)
+                            .back(10)
+                            .build());
                     break;
                 case 2:
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 4))
-                            .forward(20)
-                            .displacementMarker(() -> {
+                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 16))
+                            .forward(17)
+                            .addDisplacementMarker(() -> {
                                 spitPixel();
                             })
-                            .splineTo(new Vector2d(25, 0), Math.toRadians(0))
+                            .splineTo(new Vector2d(18, 38), Math.toRadians(-Math.PI/2))
                             .build());
 
                     break;
             }
-            d.turn(Math.PI / 2);
-            d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
-                    .forward(90)
-                .build());
-            d.turn(Math.PI);
-            d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
-                    .displacementMarker(() -> {
-                      dropPixel();
-                    })
-                            .strafeLeft(14)
-                            .forward(8)
-                    .build());
     }
 
 }

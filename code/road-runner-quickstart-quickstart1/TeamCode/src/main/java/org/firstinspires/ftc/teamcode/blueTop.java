@@ -170,9 +170,9 @@ public class blueTop extends LinearOpMode {
 
         switch (prop) {
             case 0:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 4))
-                        .forward(23)
-                        .displacementMarker(() -> {
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 16))
+                        .forward(17)
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
                         .splineTo(new Vector2d(25, 0), -Math.PI / 2)
@@ -180,8 +180,8 @@ public class blueTop extends LinearOpMode {
                 break;
             case 1:
                 d.followTrajectory(d.trajectoryBuilder(new Pose2d())
-                        .forward(25)
-                        .displacementMarker(() -> {
+                        .forward(17)
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
                         .build());
@@ -189,9 +189,9 @@ public class blueTop extends LinearOpMode {
 
                 break;
             case 2:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 4))
-                        .forward(23)
-                        .displacementMarker(() -> {
+                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 16))
+                        .forward(18)
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
                         .splineTo(new Vector2d(25, 0), -Math.PI / 2)
@@ -203,7 +203,7 @@ public class blueTop extends LinearOpMode {
                 .build());
         d.turn(Math.PI);
         d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
-                .displacementMarker(() -> {
+                .addDisplacementMarker(() -> {
                     dropPixel();
                 })
                 .strafeLeft(14)

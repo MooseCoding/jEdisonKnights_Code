@@ -1,0 +1,25 @@
+red bottom
+drive.trajectorySequenceBuilder(new Pose2d(-34, -72, Math.PI/2))
+                                .
+                                .splineTo(new Vector2d(-16, -34), Math.toRadians(0))
+                                .forward(65)
+                                .turn(Math.PI)
+                                .strafeRight(21)
+                                .back(10)
+                                .build());
+                     
+
+
+blue bottom
+ drive.trajectorySequenceBuilder(new Pose2d(-35, 72, -Math.PI/2))
+                                .forward(35)
+                                .splineTo(new Vector2d(-16, 35), Math.toRadians(0))
+                                .forward(65)
+                                .turn(Math.PI)
+                                .strafeLeft(26)
+                                .back(10)
+                                .build());
+
+
+
+

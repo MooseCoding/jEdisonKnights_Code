@@ -172,7 +172,7 @@ public class redTop extends LinearOpMode {
             case 0:
                 d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 4))
                         .forward(23)
-                        .displacementMarker(() -> {
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
                         .splineTo(new Vector2d(25, 0), Math.PI / 2)
@@ -181,7 +181,7 @@ public class redTop extends LinearOpMode {
             case 1:
                 d.followTrajectory(d.trajectoryBuilder(new Pose2d())
                         .forward(25)
-                        .displacementMarker(() -> {
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
                         .build());
@@ -191,7 +191,7 @@ public class redTop extends LinearOpMode {
             case 2:
                 d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 4))
                         .forward(23)
-                        .displacementMarker(() -> {
+                        .addDisplacementMarker(() -> {
                             spitPixel();
                         })
                         .splineTo(new Vector2d(25, 0), Math.PI / 2)
@@ -203,7 +203,7 @@ public class redTop extends LinearOpMode {
                 .build());
         d.turn(Math.PI);
         d.followTrajectory(d.trajectoryBuilder(d.getPoseEstimate())
-                .displacementMarker(() -> {
+                .addDisplacementMarker(() -> {
                     dropPixel();
                 })
                 .strafeLeft(14)
