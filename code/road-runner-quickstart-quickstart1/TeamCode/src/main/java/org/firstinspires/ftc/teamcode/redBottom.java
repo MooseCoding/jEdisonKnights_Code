@@ -27,23 +27,33 @@ import java.util.Queue;
 
 @Autonomous
 public class redBottom extends LinearOpMode {
+    private int hPA = 250;
+    private int s1PA = 0;
+    private int s2PA = 403;
+    private int s3PA = 2650;
+    private int hAM = 80;
+
+    private int s1AM = -64;
+    private int s2AM = -70;
+    private int s3AM =152;
     private int prop = 1;
-    private double propTheta = 0;
+
 
     private void spitPixel() {
-        in.setPower(-0.1);
+        in.setPower(-0.5);
         double t = getRuntime();
-        while (t + 1 > getRuntime()){}
+        while (t + 2 > getRuntime()){
+        }
     }
 
-    private void dropPixel() {
+    private void dropPixel() {/*
         pA.setTargetPosition(20);
         pA.setPower(0.5);
         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         am.setTargetPosition(-19);
         am.setPower(0.2);
         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (pA.getCurrentPosition() >= 20 && am.getCurrentPosition() >= -19) {}
+        while (pA.getCurrentPosition() >= 19 && am.getCurrentPosition() >= -18) {}
             double t = getRuntime();
             while (getRuntime() < 0.2 + t) {}
             r1.setPosition(0.04);
@@ -58,16 +68,16 @@ public class redBottom extends LinearOpMode {
             am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             while (pA.getCurrentPosition() >= 400 && am.getCurrentPosition() <= -57) {}
 
-            pA.setTargetPosition(2449);
+            pA.setTargetPosition(2650);
             pA.setPower(0.6);
             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-            am.setTargetPosition(185);
+            am.setTargetPosition(152);
             am.setPower(0.2);
             am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            while (pA.getCurrentPosition() >= 2447 && am.getCurrentPosition() >= 182) {}
+            while (pA.getCurrentPosition() >= 2646 && am.getCurrentPosition() >= 150) {}
 
             r1.setPosition(0.13);
             r2.setPosition(0.126);
@@ -77,54 +87,94 @@ public class redBottom extends LinearOpMode {
             pA.setTargetPosition(0);
             pA.setPower(0.7);
             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            */
+        int arm = -1;
+        boolean armReset = true;
+        boolean leftArm = false;
+        switch (arm) {
+            case -1:
+                if (armReset) {
+                    r1.setPosition(0.126);
+                    r2.setPosition(0.13);
+                    pA.setTargetPosition(hPA);
+                    pA.setPower(0.6);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    am.setTargetPosition(hAM);
+                    am.setPower(0.1);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armReset = false;
+                }
+                break;
+            case 0:
+                if (!armReset) {
+                    am.setTargetPosition(-66);
+                    am.setPower(0.5);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armReset = true;
+                }
+                if (am.getCurrentPosition() <= -60) {
+                    pA.setTargetPosition(60);
+                    pA.setPower(0.5);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                if (pA.getCurrentPosition() <= 90) {
+                    arm++;
+                    armReset = false;
+                }
+                break;
+            case 1:
+                if (!armReset) {
+                    double t = getRuntime();
+                    while (getRuntime() < 0.5 + t) {
+                    }
+                    r1.setPosition(0.04);
+                    r2.setPosition(0.05);
+                    t = getRuntime();
+                    while (getRuntime() < 0.2 + t) {
+                    }
+                    pA.setTargetPosition(403);
+                    pA.setPower(0.4);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    am.setTargetPosition(s2AM);
+                    am.setPower(0.6);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armReset = true;
+                }
+                if (pA.getCurrentPosition() >= 400 && am.getCurrentPosition() <= s2PA + 4) {
+                    arm++;
+                }
+                break;
+            case 2:
+                if (armReset) {
+
+                    pA.setTargetPosition(s3PA);
+                    pA.setPower(0.6);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+                    am.setTargetPosition(s3AM);
+                    am.setPower(0.2);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                if (pA.getCurrentPosition() >= s3PA - 1 && am.getCurrentPosition() >= s3AM - 1) {
+                    arm++;
+                }
+                break;
+            case 3:
+
+                    r1.setPosition(0.13);
+
+
+                    r2.setPosition(0.126);
+
+                double t =getRuntime();
+                while (t + 3 > getRuntime()) {}
+                break;
         }
-
-
-    private static final String TFOD_MODEL_ASSET = "redBottom.tflite";
-    private TfodProcessor tfod;
-
-    private static final String[] LABELS = {"teamProp"};
-
-    private VisionPortal visionPortal;
-
-    private void initTfod() {
-
-        // Create the TensorFlow processor by using a builder.
-        tfod = new TfodProcessor.Builder()
-
-                // With the following lines commented out, the default TfodProcessor Builder
-                // will load the default model for the season. To define a custom model to load,
-                // choose one of the following:
-                //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
-                //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                //.setModelAssetName(TFOD_MODEL_ASSET)
-                //.setModelFileName(TFOD_MODEL_FILE)
-
-                // The following default sett ings are available to un-comment and edit as needed to
-                // set parameters for custom models.
-                //.setModelLabels(new String[] {"Blue team prop"})
-                //.setIsModelTensorFlow2(true)
-                //.setIsModelQuantized(true)
-                //.setModelInputSize(300)
-                //.setModelAspectRatio(16.0 / 9.0)
-
-                .build();
-
-        // Create the vision portal by using a builder.
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-
-        builder.setCamera(hardwareMap.get(WebcamName.class, "cam"));
-
-        builder.addProcessor(tfod);
-
-        visionPortal = builder.build();
-
-
-        tfod.setMinResultConfidence(0.8f);
-
-
-
     }
+
+
+
 
     private DcMotor pA, in, am;
 
@@ -149,6 +199,9 @@ public class redBottom extends LinearOpMode {
 
         waitForStart();
 
+        r1.setPosition(0.04);
+        r2.setPosition(0.05);
+
             /*
             while(r == null || r.getConfidence() < 0.8 && getRuntime() < 3) {
                 r = tfod.getRecognitions().get(0);
@@ -166,44 +219,63 @@ public class redBottom extends LinearOpMode {
             }
             */
             prop = 1;
+
             switch (prop) {
                 case 0:
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 16))
-                            .forward(17)
-                            .addDisplacementMarker(() -> {
-                                spitPixel();
-                            })
-                            .splineTo(new Vector2d(18, 38), Math.toRadians(-Math.PI/2))
+                    d.followTrajectorySequence( d.trajectorySequenceBuilder(new Pose2d(-36, -72, Math.PI/2))
+                            .splineTo(new Vector2d(-28, -30), Math.PI/2)
+                                    .build());
+                    spitPixel();
+                    d.followTrajectorySequence( d.trajectorySequenceBuilder(new Pose2d(-28, -30, Math.PI/2))
+                            .back(4)
+                            .turn(-Math.PI/2)
+                            .splineTo(new Vector2d(-16, -34), 0)
+                            .splineTo(new Vector2d(65-20, -34), Math.PI)
+
+                            .splineTo(new Vector2d(65-24, -34), Math.PI)
+                            .splineTo(new Vector2d(56, -10), Math.PI)
                             .build());
+
                     break;
                 case 1:
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(-35, -60), 0)
-                            .forward(23)
-                            .build());
+                    d.setPoseEstimate(new Pose2d(-34, -72, Math.PI/2));
+                    d.followTrajectorySequence(
+                            d.trajectorySequenceBuilder(new Pose2d(-34, -72, Math.PI/2))
+                                    .splineTo(new Vector2d(-34, -32), Math.PI/2)
+                                    .build());
+                    spitPixel();
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-34, -32, Math.PI/2))
+                                    .splineTo(new Vector2d(-34, -32-15), Math.PI/2)
+                                    .splineTo(new Vector2d(-34, -32-15+7), Math.PI/2)
+                                    .splineTo(new Vector2d(-16, -34), 0)
+                                    .build());
+                    dropPixel();
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-16, -34, 0))
+                                    .splineTo(new Vector2d(65-20, -34), Math.PI)
+                                    .splineTo(new Vector2d(65-24, -34), Math.PI)
+                                    .splineTo(new Vector2d(56, -10), Math.PI)
+                                    .build());
+                    break;
+                case 2: // red left
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-36, -72, Math.PI/2))
+                            .splineTo(new Vector2d(-48, -33), Math.PI/2)
+                                    .build());
 
                     spitPixel();
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
-                            .splineTo(new Vector2d(-16, -34), Math.PI/2)
-                            .forward(65)
-                            .build());
-                    d.turn(Math.PI);
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-48, -33, Math.PI/2))
+                            .back(6)
+                            .turn(-Math.PI/2)
+                            .splineTo(new Vector2d(-16, -34), 0)
+                            .splineTo(new Vector2d(65-20, -34), Math.PI)
+                                    .build());
                     dropPixel();
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
-                            .strafeRight(26)
-                            .back(10)
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-20, -34, Math.PI))
+                            .forward(4)
+                            .splineTo(new Vector2d(56, -10), Math.PI)
                             .build());
-                    break;
-                case 2:
-                    d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), (Math.PI / 16))
-                            .forward(17)
-                            .addDisplacementMarker(() -> {
-                                spitPixel();
-                            })
-                            .splineTo(new Vector2d(18, 38), Math.toRadians(-Math.PI/2))
-                            .build());
-
                     break;
             }
+
     }
 
 }

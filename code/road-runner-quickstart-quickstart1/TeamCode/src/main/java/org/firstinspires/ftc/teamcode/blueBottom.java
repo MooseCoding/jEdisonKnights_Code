@@ -165,16 +165,25 @@ public class blueBottom extends LinearOpMode {
         prop = 1;
 
         switch (prop) {
-            case 0:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(-35, 60), -(Math.PI / 2))
-                        .forward(23)
-                        .addDisplacementMarker(() -> {
-                            spitPixel();
-                        })
-                        .splineTo(new Vector2d(19, -37), Math.PI/2)
-                        .build());
+            case 1:
+                d.followTrajectorySequence(
+                    d.trajectorySequenceBuilder(new Pose2d(-35, 72, -Math.PI/2))
+                            .splineTo(new Vector2d(-45, 34), -Math.PI/2)
+                            .build());
+                spitPixel();
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-45, 34, -Math.PI/2))
+                            .back(2)
+                            .turn(Math.PI/2)
+                            .splineTo(new Vector2d(-16, 35), Math.toRadians(0))
+                            .splineTo(new Vector2d(65-23, 35), Math.PI)
+                                .build());
+                dropPixel();
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-23, 35, Math.PI))
+                            .splineTo(new Vector2d(65-30, 35), Math.PI)
+                            .splineTo(new Vector2d(56, 10), Math.PI/2)
+                            .build());
                 break;
-           /* case 1:
+           case 0:
                 d.followTrajectory(d.trajectoryBuilder(new Pose2d(-35, 60), 0)
                         .forward(23)
                                 .build());
@@ -192,17 +201,6 @@ public class blueBottom extends LinearOpMode {
                         .build());
                 break;
 
-            */
-            case 1:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(34, -72), Math.PI/2)
-                        .forward(17)
-                        .addDisplacementMarker(() -> {
-                            spitPixel();
-                        })
-                        .splineTo(new Vector2d(23, 0), Math.PI/2)
-                        .build());
-
-                break;
             case 2:
                 d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 16))
                         .forward(17)
