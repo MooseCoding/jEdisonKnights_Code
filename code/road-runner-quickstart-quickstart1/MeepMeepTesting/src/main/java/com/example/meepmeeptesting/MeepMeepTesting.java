@@ -96,10 +96,10 @@ public class MeepMeepTesting {
                                 .back(6)
                                 .turn(-Math.PI/2)
                                 .splineTo(new Vector2d(-16, -34), 0)
-                                .splineTo(new Vector2d(65-20, -34), Math.PI)
-
+                                .splineTo(new Vector2d(65-20, -34), 0)
+                                .turn(Math.PI)
                                 .splineTo(new Vector2d(65-24, -34), Math.PI)
-                                .splineTo(new Vector2d(56, -10), Math.PI)
+                                .splineTo(new Vector2d(56, -10), Math.PI/2)
                                 .build());
 
 
