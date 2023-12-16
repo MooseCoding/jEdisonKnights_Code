@@ -18,9 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp
 public class mooseTeleopSafe extends LinearOpMode {
 
-    int aprilTheta;
-    int aprilDistance;
-    //only temporary for code adjustment 
+    //only temporary for code adjustment
     private int hPA = 250;
     private int s1PA = 0;
     private int s2PA = 403;
@@ -127,7 +125,7 @@ public class mooseTeleopSafe extends LinearOpMode {
         bl.setDirection(DcMotor.Direction.REVERSE);
         fr.setDirection(DcMotor.Direction.FORWARD);
         br.setDirection(DcMotor.Direction.FORWARD);
-        pA.setDirection(DcMotor.Direction.FORWARD);
+        pA.setDirection(DcMotor.Direction.REVERSE);
         r2.setDirection(Servo.Direction.REVERSE);
 
 
@@ -140,49 +138,56 @@ public class mooseTeleopSafe extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             boolean buttonPress = getRuntime() >= 0.2 + time;
-            if (gamepad1.right_bumper && buttonPress) {
-                if (mult == 1) {
-                    mult = 0.4;
-                    turnMult = 0.3;
-                    gamepad1.rumble(1, 0, 100);
-                } else {
-                    mult = 1;
-                    turnMult = 0.8;
-                    gamepad1.rumble(0, 1, 100);
+            if (buttonPress) {
+                if (gamepad1.right_bumper) {
+                    if (mult == 1) {
+                        mult = 0.4;
+                        turnMult = 0.3;
+                        gamepad1.rumble(1, 0, 100);
+                    } else {
+                        mult = 1;
+                        turnMult = 0.8;
+                        gamepad1.rumble(0, 1, 100);
+                    }
                 }
-            }
-            if (gamepad1.dpad_right && buttonPress && dpadUnlock) {
-                air.setPosition(0.2015);
-                planeActive = false;
-            }
-            if (gamepad1.dpad_left && buttonPress && dpadUnlock) {
-                air.setPosition(0.3);
-            }
-            if (gamepad1.dpad_up && buttonPress && dpadUnlock) {
-                arm = -2;
-                pA.setTargetPosition(2027);
-                pA.setPower(0.3);
-                pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                if (gamepad1.dpad_right && dpadUnlock) {
+                    air.setPosition(0.2015);
+                    planeActive = false;
+                }
+                if (gamepad1.dpad_left && dpadUnlock) {
+                    air.setPosition(0.3);
+                }
+                if (gamepad1.dpad_up && dpadUnlock) {
+                    arm = -2;
+                    pA.setTargetPosition(2027);
+                    pA.setPower(0.3);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                am.setTargetPosition(-96);
-                am.setPower(0.3);
-                am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    am.setTargetPosition(-96);
+                    am.setPower(0.3);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+                }
+                if (gamepad1.dpad_down && dpadUnlock) {
+                    pA.setTargetPosition(800);
+                    pA.setPower(1);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                if (gamepad1.triangle) {
+                    lockedArm = !lockedArm;
+                }
+
+                if (lockedArm) {
+                    if (d1.getDistance(DistanceUnit.CM) <= 13) {
+                        mult = 0.4;
+                    }
+                    if (d1.getDistance(DistanceUnit.CM) > 13) {
+                        mult = 1;
+                    }
+                }
+                time = getRuntime();
             }
-            if (gamepad1.dpad_down && buttonPress && dpadUnlock) {
-                pA.setTargetPosition(800);
-                pA.setPower(1);
-                pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if (gamepad1.triangle && buttonPress) {
-                lockedArm = !lockedArm;
-            }
-            if (lockedArm && d1.getDistance(DistanceUnit.CM) <= 13) {
-                mult=0.4;
-            }
-            if (lockedArm && d1.getDistance(DistanceUnit.CM) > 13) {
-                mult=1;
-            }
+
 
             //ignore every button input within a 0.2 sec timespan as its neglible to affect results
             double max;
@@ -358,23 +363,17 @@ public class mooseTeleopSafe extends LinearOpMode {
 
 
 
-            telemetry.addData("multi", mult);
+            telemetry.addData("is slow mode", mult==0.4);
             telemetry.addData("locked arm", lockedArm);
             telemetry.addData("dpad unlocked", dpadUnlock);
             telemetry.addData("arm location", arm);
-            telemetry.addData("arm pos", pA.getCurrentPosition())
 ;            telemetry.addData("distance (cm)", d1.getDistance(DistanceUnit.CM));
-            telemetry.addData("right trigger", gamepad1.right_trigger);
-            telemetry.addData("right trigger speed", pA.getPower());
             telemetry.addData("pixel count", pixeR+pixeL);
             telemetry.addData("pixel in the right", p1C);
             telemetry.addData("pixel in the left", p2C);
-            telemetry.addData("pA pos", pA.getCurrentPosition());
             telemetry.addData("Time", getRuntime());
             telemetry.update();
-            if (buttonPress) {
-                time = getRuntime();
-            }
+
         }
 
     }
