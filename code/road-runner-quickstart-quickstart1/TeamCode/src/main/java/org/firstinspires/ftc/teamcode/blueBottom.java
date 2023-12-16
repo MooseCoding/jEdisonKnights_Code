@@ -18,8 +18,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.vision.RedScanner;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.firstinspires.ftc.teamcode.vision.Barcode;
+import org.firstinspires.ftc.teamcode.vision.BlueScanner;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -162,10 +169,29 @@ public class blueBottom extends LinearOpMode {
             else
                 prop = 2;
         }*/
-        prop = 1;
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
+        RedScanner scanner = new RedScanner(telemetry);
+        webcam.setPipeline(scanner);
+        webcam.setMillisecondsPermissionTimeout(2500);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+            }
 
-        switch (prop) {
-            case 1:
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+        telemetry.setMsTransmissionInterval(50);
+        waitForStart();
+        Barcode result = scanner.getResult();
+        result = Barcode.MIDDLE;
+        switch (result) {
+            case RIGHT:
+                telemetry.addData("Detected", result);
                 d.followTrajectorySequence(
                     d.trajectorySequenceBuilder(new Pose2d(-35, 72, -Math.PI/2))
                             .splineTo(new Vector2d(-45, 34), -Math.PI/2)
@@ -183,31 +209,40 @@ public class blueBottom extends LinearOpMode {
                             .splineTo(new Vector2d(56, 10), Math.PI/2)
                             .build());
                 break;
-           case 0:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(-35, 60), 0)
-                        .forward(23)
-                                .build());
-
-                            spitPixel();
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
-                        .splineTo(new Vector2d(-16, 35), 0)
-                        .forward(65)
-                        .build());
-                d.turn(Math.PI);
-                dropPixel();
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(d.getPoseEstimate().getX(), d.getPoseEstimate().getY()),  d.getRawExternalHeading())
-                        .strafeLeft(26)
-                        .back(10)
-                        .build());
+           case MIDDLE:
+               telemetry.addData("Detected", result);
+               d.followTrajectorySequence(
+               d.trajectorySequenceBuilder(new Pose2d(-35, 72, 0))
+                       .splineTo(new Vector2d(-35, 34), Math.PI/2)
+                       .build());
+               spitPixel();
+               d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-35, 34, Math.PI/2))
+                       .splineTo(new Vector2d(-16, 35), Math.PI/2)
+                       .splineTo(new Vector2d(65-23, 35), 3*Math.PI/2)
+                               .build());
+               dropPixel();
+               d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-23, 35, Math.PI))
+                       .splineTo(new Vector2d(65-30, 35), Math.PI)
+                       .splineTo(new Vector2d(56, 10), Math.PI/2)
+                       .build());
                 break;
 
-            case 2:
-                d.followTrajectory(d.trajectoryBuilder(new Pose2d(0, 0), -(Math.PI / 16))
-                        .forward(17)
-                        .addDisplacementMarker(() -> {
-                            spitPixel();
-                        })
-                        .splineTo(new Vector2d(23, 0), Math.PI/2)
+            case LEFT:
+                telemetry.addData("Detected", result);
+                d.followTrajectorySequence(
+                        d.trajectorySequenceBuilder(new Pose2d(-35, 72, -Math.PI/2))
+                                .splineTo(new Vector2d(-25, 34), Math.PI/2)
+                                .build());
+                spitPixel();
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-35, 34, Math.PI/2))
+                                .turn(Math.PI/2)
+                        .splineTo(new Vector2d(-16, 35), Math.toRadians(0))
+                        .splineTo(new Vector2d(65-23, 35), Math.PI)
+                        .build());
+                dropPixel();
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-23, 35, Math.PI))
+                        .splineTo(new Vector2d(65-30, 35), Math.PI)
+                        .splineTo(new Vector2d(56, 10), Math.PI/2)
                         .build());
 
                 break;

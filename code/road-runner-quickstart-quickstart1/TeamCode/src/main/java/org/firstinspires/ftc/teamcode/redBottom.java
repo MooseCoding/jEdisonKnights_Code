@@ -18,8 +18,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.vision.Barcode;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.firstinspires.ftc.teamcode.vision.RedScanner;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -180,6 +186,7 @@ public class redBottom extends LinearOpMode {
 
     private Servo r1, r2;
     private Recognition r;
+
     @Override
     public void runOpMode() {
         in = hardwareMap.get(DcMotor.class, "intake");
@@ -197,31 +204,35 @@ public class redBottom extends LinearOpMode {
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
+        RedScanner scanner = new RedScanner(telemetry);
+        webcam.setPipeline(scanner);
+        webcam.setMillisecondsPermissionTimeout(2500);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+        telemetry.setMsTransmissionInterval(50);
+
         waitForStart();
 
         r1.setPosition(0.04);
         r2.setPosition(0.05);
 
-            /*
-            while(r == null || r.getConfidence() < 0.8 && getRuntime() < 3) {
-                r = tfod.getRecognitions().get(0);
-            }
-            if (r == null) {
-                prop = 0;
-            }
-            else {
-            propTheta = r.estimateAngleToObject(AngleUnit.DEGREES);
+            Barcode result = scanner.getResult();
+            result = Barcode.MIDDLE; 
 
-            if (propTheta <= 20 && propTheta >= -20)
-                prop = 1;
-            else
-                prop = 2;
-            }
-            */
-            prop = 1;
-
-            switch (prop) {
-                case 0:
+            switch (result) {
+                case RIGHT:
+                    telemetry.addData("Dectected", result);
                     d.followTrajectorySequence( d.trajectorySequenceBuilder(new Pose2d(-36, -72, Math.PI/2))
                             .splineTo(new Vector2d(-28, -30), Math.PI/2)
                                     .build());
@@ -237,7 +248,8 @@ public class redBottom extends LinearOpMode {
                             .build());
 
                     break;
-                case 1:
+                case MIDDLE:
+                    telemetry.addData("Dectected", result);
                     d.setPoseEstimate(new Pose2d(-34, -72, Math.PI/2));
                     d.followTrajectorySequence(
                             d.trajectorySequenceBuilder(new Pose2d(-34, -72, Math.PI/2))
@@ -256,7 +268,8 @@ public class redBottom extends LinearOpMode {
                                     .splineTo(new Vector2d(56, -10), Math.PI)
                                     .build());
                     break;
-                case 2: // red left
+                case LEFT: // red left
+                    telemetry.addData("Dectected", result);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-36, -72, Math.PI/2))
                             .splineTo(new Vector2d(-48, -33), Math.PI/2)
                                     .build());
