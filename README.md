@@ -8,6 +8,8 @@ Instructions:
 Go to code/road-runner/TeamCode/src/java then find the files:
 
 TeleOp: mooseTeleOpSafe
+
+
 Auto: (red or blue)(top or bottom) 
 
 TeleOP inputs are in the driving channel of the discord
