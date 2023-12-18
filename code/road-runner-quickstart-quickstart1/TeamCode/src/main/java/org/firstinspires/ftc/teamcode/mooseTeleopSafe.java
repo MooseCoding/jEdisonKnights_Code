@@ -372,6 +372,7 @@ public class mooseTeleopSafe extends LinearOpMode {
             telemetry.addData("pixel in the right", p1C);
             telemetry.addData("pixel in the left", p2C);
             telemetry.addData("Time", getRuntime());
+
             telemetry.update();
 
         }

@@ -203,6 +203,7 @@ public class redBottom extends LinearOpMode {
 
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
+        d.setPoseEstimate(new Pose2d(-36, -72+18, Math.PI/2));
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
@@ -227,63 +228,81 @@ public class redBottom extends LinearOpMode {
         r1.setPosition(0.04);
         r2.setPosition(0.05);
 
-            Barcode result = scanner.getResult();
-            result = Barcode.MIDDLE; 
-
+        Barcode result = Barcode.MIDDLE;;
+        double cTime = getRuntime();
+        while (getRuntime() < cTime + 3) {
+            result = scanner.getResult();
+        }
+        if (result.equals(null)) {
+            result = Barcode.LEFT;
+        }
+        result =Barcode.RIGHT;
             switch (result) {
                 case RIGHT:
                     telemetry.addData("Dectected", result);
-                    d.followTrajectorySequence( d.trajectorySequenceBuilder(new Pose2d(-36, -72, Math.PI/2))
-                            .splineTo(new Vector2d(-28, -30), Math.PI/2)
+                    d.followTrajectorySequence( d.trajectorySequenceBuilder(d.getPoseEstimate())
+                                    .forward(5)
+                            .splineTo(new Vector2d(-24, -30), Math.PI/4)
                                     .build());
                     spitPixel();
-                    d.followTrajectorySequence( d.trajectorySequenceBuilder(new Pose2d(-28, -30, Math.PI/2))
-                            .back(4)
-                            .turn(-Math.PI/2)
-                            .splineTo(new Vector2d(-16, -34), 0)
-                            .splineTo(new Vector2d(65-20, -34), Math.PI)
+                    d.followTrajectorySequence( d.trajectorySequenceBuilder(d.getPoseEstimate())
+                            .back(10)
+                            .turn(-Math.PI/4)
+                            .strafeLeft(24)
+                                    .turn(Math.PI)
+                                    .back(89)
+                                    .strafeLeft(26)
 
-                            .splineTo(new Vector2d(65-24, -34), Math.PI)
-                            .splineTo(new Vector2d(56, -10), Math.PI)
                             .build());
-
+                    dropPixel();
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                                    .forward(15)
+                                    .splineTo(new Vector2d(56, -10), Math.PI)
+                            .build());
                     break;
                 case MIDDLE:
                     telemetry.addData("Dectected", result);
-                    d.setPoseEstimate(new Pose2d(-34, -72, Math.PI/2));
+                    d.setPoseEstimate(d.getPoseEstimate());
                     d.followTrajectorySequence(
-                            d.trajectorySequenceBuilder(new Pose2d(-34, -72, Math.PI/2))
-                                    .splineTo(new Vector2d(-34, -32), Math.PI/2)
+                            d.trajectorySequenceBuilder(d.getPoseEstimate())
+                                    .forward(48)
+                                    .turn(Math.PI)
+                                    .forward(10)
                                     .build());
                     spitPixel();
-                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-34, -32, Math.PI/2))
-                                    .splineTo(new Vector2d(-34, -32-15), Math.PI/2)
-                                    .splineTo(new Vector2d(-34, -32-15+7), Math.PI/2)
-                                    .splineTo(new Vector2d(-16, -34), 0)
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                                    .back(7)
+                                    .turn(-Math.PI/2)
+                                    .back(85)
+                                    .strafeLeft(25)
                                     .build());
                     dropPixel();
-                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-16, -34, 0))
-                                    .splineTo(new Vector2d(65-20, -34), Math.PI)
-                                    .splineTo(new Vector2d(65-24, -34), Math.PI)
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                                    .forward(10)
                                     .splineTo(new Vector2d(56, -10), Math.PI)
                                     .build());
                     break;
                 case LEFT: // red left
                     telemetry.addData("Dectected", result);
-                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-36, -72, Math.PI/2))
-                            .splineTo(new Vector2d(-48, -33), Math.PI/2)
+
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                            .splineTo(new Vector2d(-46, -35), Math.PI/2)
                                     .build());
 
                     spitPixel();
-                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-48, -33, Math.PI/2))
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                             .back(6)
                             .turn(-Math.PI/2)
-                            .splineTo(new Vector2d(-16, -34), 0)
-                            .splineTo(new Vector2d(65-20, -34), Math.PI)
+                            .forward(12)
+                            .turn(Math.PI/2)
+                                    .forward(31)
+                                    .turn(Math.PI/2)
+                                    .back(83)
+                                    .strafeLeft(20)
                                     .build());
                     dropPixel();
-                    d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-20, -34, Math.PI))
-                            .forward(4)
+                    d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                            .forward(10)
                             .splineTo(new Vector2d(56, -10), Math.PI)
                             .build());
                     break;

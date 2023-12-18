@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import org.firstinspires.ftc.teamcode.vision.BlueScanner;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
@@ -187,7 +187,14 @@ public class blueBottom extends LinearOpMode {
         });
         telemetry.setMsTransmissionInterval(50);
         waitForStart();
-        Barcode result = scanner.getResult();
+        Barcode result = Barcode.MIDDLE;
+        double cTime = getRuntime();
+        while (getRuntime() < cTime + 5) {
+            result = scanner.getResult();
+        }
+        if (result.equals(null)) {
+            result = Barcode.LEFT;
+        }
         result = Barcode.MIDDLE;
         switch (result) {
             case RIGHT:
