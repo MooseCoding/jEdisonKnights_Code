@@ -11,7 +11,7 @@ public class MeepMeepTesting {
         MeepMeep meepMeep = new MeepMeep(800);
 
         //Blue bottom left
-
+        /*
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(43.3, 30, Math.toRadians(180), Math.toRadians(180), 18.46)
                 .followTrajectorySequence(drive ->
@@ -27,7 +27,7 @@ public class MeepMeepTesting {
                                 .forward(15)
                                 .splineTo(new Vector2d(56, 10), Math.PI/2)
                                 .build());
-
+            */
 
         //Blue bottom Middle
         /*
@@ -88,23 +88,23 @@ public class MeepMeepTesting {
 
             */
         //Red bottom middle
-        /*
+
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(40, 22, Math.toRadians(180), Math.toRadians(180), 18.46)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-34, -72+18, Math.PI/2))
-                                .forward(48)
+                                .forward(50)
                                 .turn(Math.PI)
-                                .forward(10)
+                                .forward(4)
                                 .back(7)
                                 .turn(-Math.PI/2)
                                 .back(85)
-                                .strafeLeft(25)
+                                .strafeLeft(16)
 
                                 .forward(10)
                         .splineTo(new Vector2d(56, -10), Math.PI)
                         .build());
-           */
+
 
         //Red bottom left
         /*
