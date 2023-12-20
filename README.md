@@ -15,4 +15,8 @@ Auto: (red or blue)(top or bottom)
 TeleOP inputs are in the driving channel of the discord
 Code changes should be dropped in code log channel of the discord once my bot is working
 
+Docs are going to be up soon on how to code :)
+
+Link at: moosecoding.github.io/robotics.html
+
 -Topher
