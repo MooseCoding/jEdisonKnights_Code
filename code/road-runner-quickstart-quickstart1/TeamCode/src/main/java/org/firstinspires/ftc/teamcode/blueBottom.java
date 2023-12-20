@@ -37,101 +37,133 @@ public class blueBottom extends LinearOpMode {
     private int prop = 1;
     private double propTheta = 0;
 
-    private void spitPixel() {
-        in.setPower(-0.05);
+    private void spitPixel(double p) {
+        in.setPower(p);
         double t = getRuntime();
-        while (t + 0.2 > getRuntime()){}
+        while (t + 2 > getRuntime()){
+        }
+        in.setPower(0);
     }
 
-    private void dropPixel() {
-        pA.setTargetPosition(20);
+    private void dropPixel(SampleMecanumDrive d) {
+        pA.setTargetPosition(577);
         pA.setPower(0.5);
         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        am.setTargetPosition(-19);
+        am.setTargetPosition(-87);
         am.setPower(0.2);
         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (pA.getCurrentPosition() >= 20 && am.getCurrentPosition() >= -19) {}
-        double t = getRuntime();
-        while (getRuntime() < 0.2 + t) {}
-        r1.setPosition(0.04);
-        r2.setPosition(0.05);
-        t = getRuntime();
-        while(getRuntime() < 0.3 + t) {}
-        pA.setTargetPosition(403);
-        pA.setPower(0.4);
-        pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        am.setTargetPosition(-60);
-        am.setPower(0.2);
-        am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (pA.getCurrentPosition() >= 400 && am.getCurrentPosition() <= -57) {}
+        while (pA.getCurrentPosition() <= 575 && am.getCurrentPosition() >= -85) {}
 
-        pA.setTargetPosition(2449);
+
+        pA.setTargetPosition(2917);
         pA.setPower(0.6);
         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        am.setTargetPosition(185);
+        am.setTargetPosition(152);
         am.setPower(0.2);
         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while (pA.getCurrentPosition() >= 2447 && am.getCurrentPosition() >= 182) {}
+        while (pA.getCurrentPosition() <= 2916 && am.getCurrentPosition() <= 151);
 
         r1.setPosition(0.13);
         r2.setPosition(0.126);
+        double t = getRuntime();
+        while (t + 2 > getRuntime());
+
         am.setTargetPosition(0);
         am.setPower(0.7);
         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pA.setTargetPosition(0);
         pA.setPower(0.7);
         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        int arm = -1;
+        boolean armReset = true;
+        boolean leftArm = false;
+        switch (arm) {
+            case -1:
+                if (armReset) {
+                    r1.setPosition(0.126);
+                    r2.setPosition(0.13);
+                    pA.setTargetPosition(hPA);
+                    pA.setPower(0.6);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    am.setTargetPosition(hAM);
+                    am.setPower(0.1);
+                    am.setMode(DcMotor.RunMod6e.RUN_TO_POSITION);
+                    armReset = false;6
+                }6
+                break;6
+            case 0:
+                if (!armReset) {
+                    am.setTargetPosition(-66);
+                    am.setPower(0.5);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armReset = true;
+                }
+                if (am.getCurrentPosition() <= -60) {
+                    pA.setTargetPosition(60);
+                    pA.setPower(0.5);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                if (pA.getCurrentPosition() <= 90) {
+                    arm++;
+                    armReset = false;
+                }
+                break;
+            case 1:
+                if (!armReset) {
+                    double t = getRuntime();
+                    while (getRuntime() < 0.5 + t) {
+                    }
+                    r1.setPosition(0.04);
+                    r2.setPosition(0.05);
+                    t = getRuntime();
+                    while (getRuntime() < 0.2 + t) {
+                    }
+                    pA.setTargetPosition(403);
+                    pA.setPower(0.4);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    am.setTargetPosition(s2AM);
+                    am.setPower(0.6);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armReset = true;
+                }
+                if (pA.getCurrentPosition() >= 400 && am.getCurrentPosition() <= s2PA + 4) {
+                    arm++;
+                }
+                break;
+            case 2:
+                if (armReset) {
+
+                    pA.setTargetPosition(s3PA);
+                    pA.setPower(0.6);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+                    am.setTargetPosition(s3AM);
+                    am.setPower(0.2);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                if (pA.getCurrentPosition() >= s3PA - 1 && am.getCurrentPosition() >= s3AM - 1) {
+                    arm++;
+                }
+                break;
+            case 3:
+
+                    r1.setPosition(0.13);
+
+
+                    r2.setPosition(0.126);
+
+                double t =getRuntime();
+                while (t + 3 > getRuntime()) {}
+                break;
+        }*/
     }
 
-
-    private static final String TFOD_MODEL_ASSET = "blueModel.tflite";
-    private TfodProcessor tfod;
-
-    private static final String[] LABELS = {"teamProp"};
-
-    private VisionPortal visionPortal;
-
-    private void initTfod() {
-
-        // Create the TensorFlow processor by using a builder.
-        tfod = new TfodProcessor.Builder()
-
-                // With the following lines commented out, the default TfodProcessor Builder
-                // will load the default model for the season. To define a custom model to load,
-                // choose one of the following:
-                //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
-                //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                //.setModelAssetName(TFOD_MODEL_ASSET)
-                //.setModelFileName(TFOD_MODEL_FILE)
-
-                // The following default sett ings are available to un-comment and edit as needed to
-                // set parameters for custom models.
-                //.setModelLabels(new String[] {"Blue team prop"})
-                //.setIsModelTensorFlow2(true)
-                //.setIsModelQuantized(true)
-                //.setModelInputSize(300)
-                //.setModelAspectRatio(16.0 / 9.0)
-
-                .build();
-
-        // Create the vision portal by using a builder.
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-
-        builder.setCamera(hardwareMap.get(WebcamName.class, "cam"));
-
-        builder.addProcessor(tfod);
-
-        visionPortal = builder.build();
-
-
-        tfod.setMinResultConfidence(0.8f);
-
-
-
-    }
 
     private DcMotor pA, in, am;
 
@@ -151,6 +183,7 @@ public class blueBottom extends LinearOpMode {
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
+        d.setPoseEstimate(new Pose2d(-35, 72, -Math.PI/2));
 
         waitForStart();
 
@@ -195,63 +228,76 @@ public class blueBottom extends LinearOpMode {
         if (result.equals(null)) {
             result = Barcode.LEFT;
         }
-        result = Barcode.MIDDLE;
+        result = Barcode.LEFT;
+        r1.setPosition(0.04);
+        r2.setPosition(0.05);
         switch (result) {
             case RIGHT:
-                telemetry.addData("Detected", result);
-                d.followTrajectorySequence(
-                    d.trajectorySequenceBuilder(new Pose2d(-35, 72, -Math.PI/2))
-                            .splineTo(new Vector2d(-45, 34), -Math.PI/2)
-                            .build());
-                spitPixel();
-                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-45, 34, -Math.PI/2))
-                            .back(2)
-                            .turn(Math.PI/2)
-                            .splineTo(new Vector2d(-16, 35), Math.toRadians(0))
-                            .splineTo(new Vector2d(65-23, 35), Math.PI)
-                                .build());
-                dropPixel();
-                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-23, 35, Math.PI))
-                            .splineTo(new Vector2d(65-30, 35), Math.PI)
-                            .splineTo(new Vector2d(56, 10), Math.PI/2)
-                            .build());
+                telemetry.addData("Dectected", result);
+
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                        .forward(28)
+                        .turn(-Math.PI/2)
+                        .build());
+
+                spitPixel(-0.4);
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                                .back(1.3)
+                        .strafeLeft(13)
+                        .back(84)
+                        .strafeRight(9.4)
+                        .build());
+                dropPixel(d);
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                        .strafeLeft(11)
+                        .back(9)
+                        .build());
                 break;
            case MIDDLE:
-               telemetry.addData("Detected", result);
+               d.setPoseEstimate(d.getPoseEstimate());
                d.followTrajectorySequence(
-               d.trajectorySequenceBuilder(new Pose2d(-35, 72, 0))
-                       .splineTo(new Vector2d(-35, 34), Math.PI/2)
-                       .build());
-               spitPixel();
-               d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-35, 34, Math.PI/2))
-                       .splineTo(new Vector2d(-16, 35), Math.PI/2)
-                       .splineTo(new Vector2d(65-23, 35), 3*Math.PI/2)
+                       d.trajectorySequenceBuilder(d.getPoseEstimate())
+                               .forward(50)
+                               .turn(Math.PI)
                                .build());
-               dropPixel();
-               d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-23, 35, Math.PI))
-                       .splineTo(new Vector2d(65-30, 35), Math.PI)
-                       .splineTo(new Vector2d(56, 10), Math.PI/2)
+               spitPixel(-0.4);
+               d.updatePoseEstimate();
+               d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                       .back(1)
+                       .turn(Math.PI / 2)
+                       .back(82)
+                       .strafeRight(14)
                        .build());
-                break;
+               dropPixel(d);
+               d.updatePoseEstimate();
+               telemetry.addData("current pos", d.getPoseEstimate());
+               d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                       .strafeLeft(14)
+                       .back(10)
+                       .build());
+               break;
 
             case LEFT:
-                telemetry.addData("Detected", result);
-                d.followTrajectorySequence(
-                        d.trajectorySequenceBuilder(new Pose2d(-35, 72, -Math.PI/2))
-                                .splineTo(new Vector2d(-25, 34), Math.PI/2)
-                                .build());
-                spitPixel();
-                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(-35, 34, Math.PI/2))
-                                .turn(Math.PI/2)
-                        .splineTo(new Vector2d(-16, 35), Math.toRadians(0))
-                        .splineTo(new Vector2d(65-23, 35), Math.PI)
-                        .build());
-                dropPixel();
-                d.followTrajectorySequence(d.trajectorySequenceBuilder(new Pose2d(65-23, 35, Math.PI))
-                        .splineTo(new Vector2d(65-30, 35), Math.PI)
-                        .splineTo(new Vector2d(56, 10), Math.PI/2)
+                telemetry.addData("Dectected", result);
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                        .forward(28)
+                        .turn(Math.PI/2)
+                                .forward(2)
                         .build());
 
+                spitPixel(-0.4);
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                        .back(1)
+                        .strafeRight(13)
+                                .turn(Math.PI)
+                        .back(84.4)
+                        .strafeRight(18)
+                        .build());
+                dropPixel(d);
+                d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
+                        .strafeLeft(18)
+                        .back(9)
+                        .build());
                 break;
         }
     }

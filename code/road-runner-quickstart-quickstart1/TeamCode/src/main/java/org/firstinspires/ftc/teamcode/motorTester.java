@@ -102,11 +102,8 @@ public class motorTester extends LinearOpMode {
 
         pA = hardwareMap.get(DcMotor.class, "pA");
         //pA2 = hardwareMap.get(DcMotor.class, "pA2"); //must be run at a negative power relative to pA1
-        pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pA.setDirection(DcMotorSimple.Direction.FORWARD);
         //pA2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
 
         speedMulti = 1;
         speedMultiOn = false;
@@ -117,6 +114,10 @@ public class motorTester extends LinearOpMode {
         //servo 2 = fr
         //servo 3 = f
         while (opModeIsActive()) {
+            if(gamepad1.left_stick_button) {
+                pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
             if(this.gamepad1.triangle) {
                 br.setPower(70);
                 for (int i = 0; i < 4000; i++) {

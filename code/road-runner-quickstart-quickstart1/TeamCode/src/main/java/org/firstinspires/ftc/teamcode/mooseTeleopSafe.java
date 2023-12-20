@@ -28,7 +28,8 @@ public class mooseTeleopSafe extends LinearOpMode {
     private int s1AM = -64;
     private int s2AM = -70;
     private int s3AM =152;
-    
+
+    private int armPos;
 
 
     IMU imu;//x-axis rotation = , y-axis rotation = , z-axis rotation
@@ -117,15 +118,12 @@ public class mooseTeleopSafe extends LinearOpMode {
         d1 = hardwareMap.get(Rev2mDistanceSensor.class, "d1");
         c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
 
-        pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
 
         fl.setDirection(DcMotor.Direction.REVERSE);
         bl.setDirection(DcMotor.Direction.REVERSE);
         fr.setDirection(DcMotor.Direction.FORWARD);
         br.setDirection(DcMotor.Direction.FORWARD);
-        pA.setDirection(DcMotor.Direction.REVERSE);
+        pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
 
 
@@ -176,16 +174,16 @@ public class mooseTeleopSafe extends LinearOpMode {
                 if (gamepad1.triangle) {
                     lockedArm = !lockedArm;
                 }
-
-                if (lockedArm) {
-                    if (d1.getDistance(DistanceUnit.CM) <= 13) {
-                        mult = 0.4;
-                    }
-                    if (d1.getDistance(DistanceUnit.CM) > 13) {
-                        mult = 1;
-                    }
-                }
                 time = getRuntime();
+            }
+
+            if (lockedArm) {
+                if (d1.getDistance(DistanceUnit.CM) <= 15) {
+                    mult = 0.4;
+                }
+                if (d1.getDistance(DistanceUnit.CM) > 15) {
+                    mult = 1;
+                }
             }
 
 
@@ -280,10 +278,10 @@ public class mooseTeleopSafe extends LinearOpMode {
                     if (armReset) {
                         r1.setPosition(0.126);
                         r2.setPosition(0.13);
-                    pA.setTargetPosition(hPA);
+                    pA.setTargetPosition(307);
                     pA.setPower(0.6);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    am.setTargetPosition(hAM);
+                    am.setTargetPosition(114);
                     am.setPower(0.1);
                     am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armReset = false;
@@ -291,17 +289,17 @@ public class mooseTeleopSafe extends LinearOpMode {
                     break;
                 case 0:
                     if (!armReset) {
-                        am.setTargetPosition(-66);
+                        am.setTargetPosition(-68);
                         am.setPower(0.5);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armReset = true;
                     }
-                    if (am.getCurrentPosition() <= -60 ) {
-                        pA.setTargetPosition(60);
-                        pA.setPower(0.5);
+                    if (am.getCurrentPosition() <= -66 ) {
+                        pA.setTargetPosition(163);
+                        pA.setPower(0.3);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                    if (pA.getCurrentPosition() <= 90) {
+                    if (pA.getCurrentPosition() <= 165) {
                         arm++;
                         armReset = false;
                 }
@@ -309,40 +307,59 @@ public class mooseTeleopSafe extends LinearOpMode {
                 case 1:
                     if (!armReset) {
                         double t = getRuntime();
-                        while (getRuntime() < 0.5 + t) {}
+                        while (getRuntime() < 0.8 + t) {}
                         r1.setPosition(0.04);
                         r2.setPosition(0.05);
                         t = getRuntime();
                         while(getRuntime() < 0.2 + t) {}
-                        pA.setTargetPosition(403);
+                        pA.setTargetPosition(458);
                         pA.setPower(0.4);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        am.setTargetPosition(s2AM);
+                        am.setTargetPosition(-146);
                         am.setPower(0.6);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armReset = true;
                     }
-                    if (pA.getCurrentPosition() >= 400 && am.getCurrentPosition() <= s2PA+4) {
+                    if (pA.getCurrentPosition() >= 456 && am.getCurrentPosition() <= -144) {
                         arm++;
                     }
                     break;
                 case 2:
                     if (armReset) {
 
-                        pA.setTargetPosition(s3PA);
+                        pA.setTargetPosition(2582);
                         pA.setPower(0.6);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-                        am.setTargetPosition(s3AM);
+                        am.setTargetPosition(153);
                         am.setPower(0.2);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        armPos = 0;
                     }
-                    if (pA.getCurrentPosition() >= s3PA-1 && am.getCurrentPosition() >= s3AM-1 ) {
+                    if (pA.getCurrentPosition() >= 2579 && am.getCurrentPosition() >= 150) {
                         arm++;
                     }
                     break;
                 case 3:
+                    if (gamepad1.right_trigger > 0 && lockedArm) {
+                        if(armPos == 0) {
+                            pA.setTargetPosition(2917);
+                            pA.setPower(0.8);
+                            pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+                            while (pA.getCurrentPosition() <= 2915);
+                        }
+                        else {
+                            pA.setTargetPosition(2582);
+                            pA.setPower(0.6);
+                            pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                            while (pA.getCurrentPosition() >= 2584);
+                        }
+                    }
+
                         if (leftArm && gamepad1.circle && buttonPress) {
                             r1.setPosition(0.13);
 
@@ -353,6 +370,8 @@ public class mooseTeleopSafe extends LinearOpMode {
                         }
 
                     if (!leftArm) {
+                        double t = getRuntime();
+                        while (t + 1 > getRuntime());
                         leftArm=false;
                         arm = -1;
                     }

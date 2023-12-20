@@ -51,16 +51,16 @@ public class redBottom extends LinearOpMode {
         while (pA.getCurrentPosition() <= 575 && am.getCurrentPosition() >= -85) {}
 
 
-            pA.setTargetPosition(2698);
+            pA.setTargetPosition(2917);
             pA.setPower(0.6);
             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-            am.setTargetPosition(198);
+            am.setTargetPosition(152);
             am.setPower(0.2);
             am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            while (pA.getCurrentPosition() <= 2697 && am.getCurrentPosition() <= 197) {}
+            while (pA.getCurrentPosition() <= 2916 && am.getCurrentPosition() <= 151) {}
 
             r1.setPosition(0.13);
             r2.setPosition(0.126);
@@ -216,11 +216,6 @@ public class redBottom extends LinearOpMode {
             telemetry.addData("result", result);
             telemetry.update();
         }
-        if (result == Barcode.MIDDLE)
-            result = Barcode.RIGHT;
-
-        if (result == Barcode.LEFT)
-            result = Barcode.MIDDLE;
 
         if (result.equals(null))
             result = Barcode.LEFT;
@@ -231,26 +226,28 @@ public class redBottom extends LinearOpMode {
             switch (result) {
                 case RIGHT:
                     telemetry.addData("Dectected", result);
+
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .forward(5)
-                            .splineTo(new Vector2d(-40, -39), 70*Math.PI /180)
+                            .strafeLeft(1)
+                            .forward(28)
+                            .turn(-Math.PI/2)
                             .build());
-                    spitPixel(-0.7);
+
+                    spitPixel(-0.4);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(6)
-                            .turn(Math.PI / 9)
-                                    .strafeLeft(2.5)
-                            .forward(39.5)
+                            .back(5)
                             .turn(Math.PI/2)
-                            .back(87)
-                            .strafeLeft(19.1)
+                            .strafeLeft(2)
+                            .forward(24)
+                            .turn(Math.PI/2)
+                            .back(85)
+                            .strafeLeft(9.4)
                             .build());
                     dropPixel(d);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeRight(19)
-                            .back(9)
+                            .strafeRight(13)
+                            .back(7)
                             .build());
-                    break;
                 case MIDDLE:
                     telemetry.addData("Dectected", result);
                     d.setPoseEstimate(d.getPoseEstimate());
