@@ -18,16 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp
 public class mooseTeleopSafe extends LinearOpMode {
 
-    //only temporary for code adjustment
-    private int hPA = 250;
-    private int s1PA = 0;
-    private int s2PA = 403;
-    private int s3PA = 2650;
-    private int hAM = 80;
-
-    private int s1AM = -64;
-    private int s2AM = -70;
-    private int s3AM =152;
+    String color1;
+    String color2;
 
     private int armPos;
 
@@ -42,6 +34,7 @@ public class mooseTeleopSafe extends LinearOpMode {
     private DcMotor fl;
 
     private int pixeR = 0, pixeL = 0;
+    private int p1, p2;
 
     private double cValue;
 
@@ -76,7 +69,6 @@ public class mooseTeleopSafe extends LinearOpMode {
 
     //private int currentAprilTagID;
 
-    private boolean camOn;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
@@ -127,7 +119,7 @@ public class mooseTeleopSafe extends LinearOpMode {
         r2.setDirection(Servo.Direction.REVERSE);
 
 
-        camOn = true;
+
         lockedArm = false;
 
         double time = 0;
@@ -249,8 +241,6 @@ public class mooseTeleopSafe extends LinearOpMode {
             if (gamepad1.left_trigger > 0 && lockedArm && arm == -1) {
                 leftArm = true;
                 arm=0;
-                pixeL = 1;
-                pixeR = 1;
             }
 
             //if (gamepad1.circle) {
@@ -288,6 +278,13 @@ public class mooseTeleopSafe extends LinearOpMode {
                     }
                     break;
                 case 0:
+                    if (p1C > -1)
+                        pixeR = 1;
+                    if (p2C > -1)
+                        pixeL = 1;
+
+                    p1C = -1;
+                    p2C = -1;
                     if (!armReset) {
                         am.setTargetPosition(-68);
                         am.setPower(0.5);
@@ -360,16 +357,17 @@ public class mooseTeleopSafe extends LinearOpMode {
                         }
                     }
 
-                        if (leftArm && gamepad1.circle && buttonPress) {
+                        if (leftArm && gamepad1.circle && buttonPress && p1C > -1) {
                             r1.setPosition(0.13);
+                            pixeR = 0;
 
                         }
-                        if (leftArm && gamepad1.square && buttonPress) {
+                        if (leftArm && gamepad1.square && buttonPress && p2C > -1) {
                             r2.setPosition(0.126);
-                            leftArm = !leftArm;
+                            pixeL = 0;
                         }
 
-                    if (!leftArm) {
+                    if (pixeR == 0 && pixeL == 0) {
                         double t = getRuntime();
                         while (t + 1 > getRuntime());
                         leftArm=false;
@@ -378,18 +376,88 @@ public class mooseTeleopSafe extends LinearOpMode {
                     break;
             }
 
+            if (p1C == -1) {
+                if (c1.getRawLightDetected() > 400) {
+                    if (c1.getLightDetected() == 1)
+                        p1C = 0;
+
+                    else if (c1.getLightDetected() > 0.9)
+                        p1C = 3;
+
+                    else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
+                        p1C = 1;
+
+                    else
+                        p1C = 2;
+
+                }
+            }
+            if (p2C == -1) {
+                if (c2.getRawLightDetected() > 300) {
+                    if (c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)
+                        p2C = 1;
+                    else if (c2.getRawLightDetected() > 750)
+                        p2C = 0;
+                    else if (c2.getRawLightDetected() > 600)
+                        p2C = 3;
+                    else
+                        p2C = 2;
+                }
+            }
+
+
+
                 dpadUnlock = true;
 
+            p1 = 1;
+            p2 = 1;
 
+            switch (p1C) {
+                case -1:
+                    color1 = "no pixel";
+                    p1 = 0;
+                    break;
+                case 0:
+                    color1 = "white";
+                    break;
+                case 1:
+                    color1 = "green";
+                    break;
+                case 2:
+                    color1 = "yellow";
+                    break;
+                case 3:
+                    color1 = "purple";
+                    break;
+            }
+
+            switch (p2C) {
+                case -1:
+                    color2 = "no pixel";
+                    p2 = 0;
+                    break;
+                case 0:
+                    color2 = "white";
+                    break;
+                case 1:
+                    color2 = "green";
+                    break;
+                case 2:
+                    color2 = "yellow";
+                    break;
+                case 3:
+                    color2 = "purple";
+                    break;
+            }
 
             telemetry.addData("is slow mode", mult==0.4);
             telemetry.addData("locked arm", lockedArm);
             telemetry.addData("dpad unlocked", dpadUnlock);
             telemetry.addData("arm location", arm);
 ;            telemetry.addData("distance (cm)", d1.getDistance(DistanceUnit.CM));
-            telemetry.addData("pixel count", pixeR+pixeL);
-            telemetry.addData("pixel in the right", p1C);
-            telemetry.addData("pixel in the left", p2C);
+            telemetry.addData("pixel count", p1+p2);
+            telemetry.addData("right pixel", p1C);
+            telemetry.addData("left pixel", p2C);
             telemetry.addData("Time", getRuntime());
 
             telemetry.update();
