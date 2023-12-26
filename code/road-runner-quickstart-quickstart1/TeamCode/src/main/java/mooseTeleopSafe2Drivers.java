@@ -28,6 +28,8 @@ public class mooseTeleopSafe2Drivers extends LinearOpMode {
     private DcMotor fl;
 
     private int pixeR = 0, pixeL = 0;
+
+
     private int p1, p2;
 
     private double cValue;
@@ -111,6 +113,7 @@ public class mooseTeleopSafe2Drivers extends LinearOpMode {
         br.setDirection(DcMotor.Direction.FORWARD);
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
+        in.setDirection(DcMotor.Direction.REVERSE);
 
 
         lockedArm = false;

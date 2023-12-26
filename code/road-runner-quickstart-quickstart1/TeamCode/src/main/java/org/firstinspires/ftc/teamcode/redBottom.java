@@ -181,6 +181,7 @@ public class redBottom extends LinearOpMode {
 
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
+        in.setDirection(DcMotor.Direction.REVERSE);
 
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);

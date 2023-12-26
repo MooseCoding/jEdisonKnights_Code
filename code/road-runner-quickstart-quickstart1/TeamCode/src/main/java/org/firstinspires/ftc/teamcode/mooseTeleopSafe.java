@@ -117,6 +117,7 @@ public class mooseTeleopSafe extends LinearOpMode {
         br.setDirection(DcMotor.Direction.FORWARD);
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
+        in.setDirection(DcMotor.Direction.REVERSE);
 
 
 
@@ -272,7 +273,7 @@ public class mooseTeleopSafe extends LinearOpMode {
                     pA.setTargetPosition(307);
                     pA.setPower(0.6);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    am.setTargetPosition(114);
+                    am.setTargetPosition(80);
                     am.setPower(0.1);
                     am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armReset = false;
@@ -283,22 +284,21 @@ public class mooseTeleopSafe extends LinearOpMode {
                         pixeR = 1;
                     if (p2C > -1)
                         pixeL = 1;
-
                     if (!armReset) {
-                        am.setTargetPosition(-68);
-                        am.setPower(0.5);
+                        am.setTargetPosition(-70);
+                        am.setPower(0.7);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armReset = true;
-                    }
-                    if (am.getCurrentPosition() <= -66 ) {
-                        pA.setTargetPosition(163);
-                        pA.setPower(0.3);
-                        pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    }
-                    if (pA.getCurrentPosition() <= 165) {
-                        arm++;
-                        armReset = false;
                 }
+                    if (am.getCurrentPosition() < -72) {
+                        pA.setTargetPosition(163);
+                        pA.setPower(0.5);
+                        pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    }
+                    if (pA.getCurrentPosition() < 165) {
+                        armReset = false;
+                        arm++;
+                    }
                     break;
                 case 1:
                     if (!armReset) {
