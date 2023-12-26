@@ -222,13 +222,13 @@ public class blueBottom extends LinearOpMode {
         waitForStart();
         Barcode result = Barcode.MIDDLE;
         double cTime = getRuntime();
-        while (getRuntime() < cTime + 5) {
+        while (getRuntime() < cTime + 3) {
             result = scanner.getResult();
         }
-        if (result.equals(null)) {
-            result = Barcode.LEFT;
-        }
-        result = Barcode.LEFT;
+        if (result.equals(null))
+            result = Barcode.LEFT
+                    ;
+
         r1.setPosition(0.04);
         r2.setPosition(0.05);
         switch (result) {

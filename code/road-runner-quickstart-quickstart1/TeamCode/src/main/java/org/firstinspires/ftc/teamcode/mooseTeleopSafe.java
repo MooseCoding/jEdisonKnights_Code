@@ -144,9 +144,10 @@ public class mooseTeleopSafe extends LinearOpMode {
                     air.setPosition(0.2015);
                     planeActive = false;
                 }
-                if (gamepad1.dpad_left && dpadUnlock) {
+
+                if (gamepad1.dpad_left && dpadUnlock)
                     air.setPosition(0.3);
-                }
+
                 if (gamepad1.dpad_up && dpadUnlock) {
                     arm = -2;
                     pA.setTargetPosition(2027);
@@ -170,12 +171,12 @@ public class mooseTeleopSafe extends LinearOpMode {
             }
 
             if (lockedArm) {
-                if (d1.getDistance(DistanceUnit.CM) <= 15) {
+                if (d1.getDistance(DistanceUnit.CM) <= 15)
                     mult = 0.4;
-                }
-                if (d1.getDistance(DistanceUnit.CM) > 15) {
+
+                if (d1.getDistance(DistanceUnit.CM) > 15)
                     mult = 1;
-                }
+
             }
 
 
@@ -222,19 +223,19 @@ public class mooseTeleopSafe extends LinearOpMode {
             }
             */
 
-            if (gamepad1.right_trigger > 0 && !lockedArm) {
+            if (gamepad1.right_trigger > 0 && !lockedArm)
                 in.setPower(iP);
-            } else if (gamepad1.left_trigger > 0 && !lockedArm) {
+            else if (gamepad1.left_trigger > 0 && !lockedArm)
                 in.setPower(-iP);
-            } else {
+            else
                 in.setPower(0);
-            }
+
 
 
             
-            if (gamepad1.right_trigger > 0 && lockedArm && arm == -1) {
+            if (gamepad1.right_trigger > 0 && lockedArm && arm == -1)
                 arm = 0;
-            }
+
             
    
 
@@ -283,8 +284,6 @@ public class mooseTeleopSafe extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
 
-                    p1C = -1;
-                    p2C = -1;
                     if (!armReset) {
                         am.setTargetPosition(-68);
                         am.setPower(0.5);
@@ -345,23 +344,20 @@ public class mooseTeleopSafe extends LinearOpMode {
                             pA.setPower(0.8);
                             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-                            while (pA.getCurrentPosition() <= 2915);
                         }
                         else {
                             pA.setTargetPosition(2582);
                             pA.setPower(0.6);
                             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                            while (pA.getCurrentPosition() >= 2584);
                         }
                     }
 
                         if (leftArm && gamepad1.circle && buttonPress && p1C > -1) {
                             r1.setPosition(0.13);
                             pixeR = 0;
-
                         }
+
                         if (leftArm && gamepad1.square && buttonPress && p2C > -1) {
                             r2.setPosition(0.126);
                             pixeL = 0;
@@ -375,8 +371,6 @@ public class mooseTeleopSafe extends LinearOpMode {
                     }
                     break;
             }
-
-            if (p1C == -1) {
                 if (c1.getRawLightDetected() > 400) {
                     if (c1.getLightDetected() == 1)
                         p1C = 0;
@@ -391,8 +385,7 @@ public class mooseTeleopSafe extends LinearOpMode {
                         p1C = 2;
 
                 }
-            }
-            if (p2C == -1) {
+
                 if (c2.getRawLightDetected() > 300) {
                     if (c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)
                         p2C = 1;
@@ -403,11 +396,12 @@ public class mooseTeleopSafe extends LinearOpMode {
                     else
                         p2C = 2;
                 }
-            }
 
 
 
+            if (getRuntime() > 90)
                 dpadUnlock = true;
+
 
             p1 = 1;
             p2 = 1;
@@ -456,8 +450,8 @@ public class mooseTeleopSafe extends LinearOpMode {
             telemetry.addData("arm location", arm);
 ;            telemetry.addData("distance (cm)", d1.getDistance(DistanceUnit.CM));
             telemetry.addData("pixel count", p1+p2);
-            telemetry.addData("right pixel", p1C);
-            telemetry.addData("left pixel", p2C);
+            telemetry.addData("right pixel", color1);
+            telemetry.addData("left pixel", color2);
             telemetry.addData("Time", getRuntime());
 
             telemetry.update();

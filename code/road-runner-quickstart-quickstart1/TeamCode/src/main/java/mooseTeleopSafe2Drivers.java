@@ -122,7 +122,7 @@ public class mooseTeleopSafe2Drivers extends LinearOpMode {
         while (opModeIsActive()) {
             boolean buttonPress = getRuntime() >= 0.2 + time;
             if (buttonPress) {
-                if (gamepad1.right_bumper) {
+                if (gamepad1.right_bumper || gamepad2.right_bumper) {
                     if (mult == 1) {
                         mult = 0.4;
                         turnMult = 0.3;
@@ -169,6 +169,18 @@ public class mooseTeleopSafe2Drivers extends LinearOpMode {
                 if (d1.getDistance(DistanceUnit.CM) > 15) {
                     mult = 1;
                 }
+
+
+
+
+                if (gamepad2.y)
+                    planeActive = true;
+
+                if (gamepad2.dpad_up) {
+                    pixeL = 1;
+                    pixeR = 1;
+                }
+
             }
 
 
@@ -233,6 +245,9 @@ public class mooseTeleopSafe2Drivers extends LinearOpMode {
                 leftArm = true;
                 arm = 0;
             }
+
+            if (gamepad2.right_trigger > 0)
+                arm = -1;
 
             //if (gamepad1.circle) {
             //look for april tags on the left
@@ -441,17 +456,7 @@ public class mooseTeleopSafe2Drivers extends LinearOpMode {
                     break;
             }
 
-            if (gamepad2.right_trigger > 0) {//
-                arm = -1;
-            }
 
-                if (gamepad2.y && buttonPress)
-                    planeActive = true;
-
-                if (gamepad2.dpad_up && buttonPress) {
-                    pixeL = 1;
-                    pixeR = 1;
-                }
 
 
                 telemetry.addData("is slow mode", mult == 0.4);
