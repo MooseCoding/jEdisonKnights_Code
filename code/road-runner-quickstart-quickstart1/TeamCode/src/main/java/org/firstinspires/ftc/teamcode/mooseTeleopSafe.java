@@ -5,14 +5,9 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
-
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
@@ -82,7 +77,7 @@ public class mooseTeleopSafe extends LinearOpMode {
                 .setDrawTagID(true)
                 .setDrawTagOutline(true)
                 .build();
-        VisionPortal visionPortal = new VisionPortal.Builder()
+        VisionPortal visionPortal = new VisionPortal.Bu10ilder()
                 .addProcessor(tagProcessor)
                 .setCamera(hardwareMap.get(WebcamName.class, "cam"))
                 .setCameraResolution(new Size(640, 480))
@@ -151,7 +146,7 @@ public class mooseTeleopSafe extends LinearOpMode {
 
                 if (gamepad1.dpad_up && dpadUnlock) {
                     arm = -2;
-                    pA.setTargetPosition(2027);
+                    pA.setTargetPosition(2200);
                     pA.setPower(0.3);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -165,9 +160,9 @@ public class mooseTeleopSafe extends LinearOpMode {
                     pA.setPower(1);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-                if (gamepad1.triangle) {
+                if (gamepad1.triangle)
                     lockedArm = !lockedArm;
-                }
+
                 time = getRuntime();
             }
 
@@ -225,22 +220,13 @@ public class mooseTeleopSafe extends LinearOpMode {
             */
 
             if (gamepad1.right_trigger > 0 && !lockedArm)
-                in.setPower(iP);
-            else if (gamepad1.left_trigger > 0 && !lockedArm)
                 in.setPower(-iP);
+            else if (gamepad1.left_trigger > 0 && !lockedArm)
+                in.setPower(iP);
             else
                 in.setPower(0);
 
-
-
-            
-            if (gamepad1.right_trigger > 0 && lockedArm && arm == -1)
-                arm = 0;
-
-            
-   
-
-            if (gamepad1.left_trigger > 0 && lockedArm && arm == -1) {
+            if (gamepad1.right_trigger > 0 && lockedArm && arm == -1) {
                 leftArm = true;
                 arm=0;
             }
@@ -270,10 +256,10 @@ public class mooseTeleopSafe extends LinearOpMode {
                     if (armReset) {
                         r1.setPosition(0.126);
                         r2.setPosition(0.13);
-                    pA.setTargetPosition(307);
+                    pA.setTargetPosition(500);
                     pA.setPower(0.6);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    am.setTargetPosition(80);
+                    am.setTargetPosition(-120);
                     am.setPower(0.1);
                     am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armReset = false;
@@ -285,17 +271,17 @@ public class mooseTeleopSafe extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                        am.setTargetPosition(-70);
-                        am.setPower(0.7);
+                            am.setTargetPosition(-50);
+                        am.setPower(1);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-                    if (am.getCurrentPosition() < -72) {
-                        pA.setTargetPosition(163);
-                        pA.setPower(0.5);
+                    if (am.getCurrentPosition() >= -54) {
+                        pA.setTargetPosition(0);
+                        pA.setPower(0.3);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                     }
-                    if (pA.getCurrentPosition() < 165) {
+                    if (pA.getCurrentPosition() == 0) {
                         armReset = false;
                         arm++;
                     }
@@ -307,28 +293,28 @@ public class mooseTeleopSafe extends LinearOpMode {
                         r1.setPosition(0.04);
                         r2.setPosition(0.05);
                         t = getRuntime();
-                        while(getRuntime() < 0.2 + t) {}
+                        while(getRuntime() < 0.5 + t) {}
                         pA.setTargetPosition(458);
-                        pA.setPower(0.4);
+                        pA.setPower(1);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         am.setTargetPosition(-146);
                         am.setPower(0.6);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armReset = true;
                     }
-                    if (pA.getCurrentPosition() >= 456 && am.getCurrentPosition() <= -144) {
+                    if (pA.getCurrentPosition() >= 450 && am.getCurrentPosition() <= -140) {
                         arm++;
                     }
                     break;
                 case 2:
                     if (armReset) {
 
-                        pA.setTargetPosition(2582);
+                        pA.setTargetPosition(2750);
                         pA.setPower(0.6);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-                        am.setTargetPosition(153);
+                        am.setTargetPosition(186);
                         am.setPower(0.2);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armPos = 0;
