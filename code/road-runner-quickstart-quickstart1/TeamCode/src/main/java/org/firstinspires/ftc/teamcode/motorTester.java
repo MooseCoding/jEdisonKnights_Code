@@ -42,6 +42,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @TeleOp
+
 public class motorTester extends LinearOpMode {
 
     int aprilTheta;
@@ -60,6 +61,8 @@ public class motorTester extends LinearOpMode {
 
     private DcMotor am;
     private Servo r1, r2;
+
+    private RevColorSensorV3 c1, c2;
     boolean speedMultiOn;
 
     double speedMulti;
@@ -91,6 +94,8 @@ public class motorTester extends LinearOpMode {
         bl = hardwareMap.get(DcMotor.class, "bl");
         fl = hardwareMap.get(DcMotor.class, "fl");
         i = hardwareMap.get(DcMotor.class, "intake");
+        c1 = hardwareMap.get(RevColorSensorV3.class, "c1");
+        c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
 
 
         am = hardwareMap.get(DcMotor.class, "am");
@@ -180,6 +185,86 @@ public class motorTester extends LinearOpMode {
             telemetry.addData(" motor speed", pA.getPower());
             telemetry.addData(" encoder pos", pA.getCurrentPosition());
             telemetry.addData("am pos", am.getCurrentPosition());
+            telemetry.addData("c1 raw", c1.getRawLightDetected());
+            telemetry.addData("c1 unraw", c1.getLightDetected());
+            telemetry.addData("c1 green", c1.green());
+            telemetry.addData("c1 red", c1.red());
+            telemetry.addData("c1 blue", c1.blue());
+            telemetry.addData("c2 raw", c2.getRawLightDetected());
+            telemetry.addData("c2 unraw", c2.getLightDetected());
+            telemetry.addData("c2 green", c2.green());
+            telemetry.addData("c2 red", c2.red());
+            telemetry.addData("c2 blue", c2.blue());
+            int p1C= 0, p2C = 0;
+            String color1 = "", color2 = "";
+            if (c1.getRawLightDetected() > 400) {
+                if (c1.getLightDetected() == 1)
+                    p1C = 0;
+
+                else if (c1.getLightDetected() > 0.9)
+                    p1C = 3;
+
+                else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
+                    p1C = 1;
+
+                else
+                    p1C = 2;
+
+            }
+            else
+                p1C = -1;
+
+            if (c2.getRawLightDetected() > 300) {
+                if ((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.257) && c2.red() != c2.green())
+                    p2C = 1;
+                else if (c2.getRawLightDetected() > 750)
+                    p2C = 0;
+                else if (c2.getRawLightDetected() > 600)
+                    p2C = 3;
+                else
+                    p2C = 2;
+            }
+            else
+                p2C =-1;
+
+            switch (p1C) {
+                case -1:
+                    color1 = "no pixel";
+                    break;
+                case 0:
+                    color1 = "white";
+                    break;
+                case 1:
+                    color1 = "green";
+                    break;
+                case 2:
+                    color1 = "yellow";
+                    break;
+                case 3:
+                    color1 = "purple";
+                    break;
+            }
+
+            switch (p2C) {
+                case -1:
+                    color2 = "no pixel";
+                    break;
+                case 0:
+                    color2 = "white";
+                    break;
+                case 1:
+                    color2 = "green";
+                    break;
+                case 2:
+                    color2 = "yellow";
+                    break;
+                case 3:
+                    color2 = "purple";
+                    break;
+            }
+            telemetry.addLine();
+            telemetry.addData("right pixel", color1);
+            telemetry.addData("left pixel", color2);
             telemetry.update();
         }
     }
