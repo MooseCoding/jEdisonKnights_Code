@@ -1,0 +1,27 @@
+Gamepad 1:
+
+Basic functions:
+
+Left stick -- move forwards, backwards, and strafe left/right
+Right stick -- turn on the x axis 
+Triangle/Y -- unlock arm is set to the opposite of what it currently is
+
+
+When arm is unlocked:
+
+Right trigger -- intake pixels
+Left trigger -- outtake pixels
+
+When arm is locked:
+
+Right trigger -- move the arm and get it running its set movements
+Cross/A -- change the position of the arm between three different positions at varying pixel height (1,2,3 pixels respectively)
+Square/X -- release on the left servo (this is the servo on the left when the robot is aganist the backboard and reversed)
+Circle/B -- release on the right servo (other servo on the claw)
+
+Dpad unlocked (after 90 seconds of driver controlled play):
+
+Dpad up -- prime arm for hanging, must be done near the rigging
+Dpad down -- bring the arm down and the robot up must be done after dpad up has locked onto the rigging
+Dpad left -- shoot the airplane 
+
