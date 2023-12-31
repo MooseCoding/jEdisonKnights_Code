@@ -214,6 +214,7 @@ public class redBottom extends LinearOpMode {
         double cTime = getRuntime();
         while (getRuntime() < cTime + 3) {
             result = scanner.getResult();
+            telemetry.addData("values", Barcode.values());
             telemetry.addData("result", result);
             telemetry.update();
         }
@@ -234,14 +235,14 @@ public class redBottom extends LinearOpMode {
                             .turn(-Math.PI/2)
                             .build());
 
-                    spitPixel(-0.4);
+                    spitPixel(0.4);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                             .back(5)
                             .turn(Math.PI/2)
                             .strafeLeft(2)
                             .forward(24)
                             .turn(Math.PI/2)
-                            .back(85)
+                            .back(77)
                             .strafeLeft(9.4)
                             .build());
                     dropPixel(d);
@@ -257,12 +258,13 @@ public class redBottom extends LinearOpMode {
                                     .forward(50)
                                     .turn(Math.PI)
                                     .build());
-                    spitPixel(-0.4);
+                    spitPixel(0.4);
                     d.updatePoseEstimate();
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(1)
+                            .back(3)
                             .turn(-Math.PI / 2)
-                            .back(82.5)
+                                    .strafeRight(1)
+                            .back(77)
                             .strafeLeft(12)
                             .build());
                     dropPixel(d);
@@ -282,14 +284,14 @@ public class redBottom extends LinearOpMode {
                                     .turn(Math.PI/2)
                             .build());
 
-                    spitPixel(-0.4);
+                    spitPixel(0.4);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                             .back(5)
                             .turn(-Math.PI/2)
                                     .strafeLeft(2)
                             .forward(24)
                             .turn(Math.PI/2)
-                            .back(85)
+                            .back(77)
                             .strafeLeft(9.4)
                             .build());
                     dropPixel(d);

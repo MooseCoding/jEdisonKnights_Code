@@ -81,7 +81,7 @@ public class BlueScanner extends OpenCvPipeline {
     }
 
     public Barcode getResult() {
-        while (result == null);
+        while (result == null) ;
         return result;
     }
 }

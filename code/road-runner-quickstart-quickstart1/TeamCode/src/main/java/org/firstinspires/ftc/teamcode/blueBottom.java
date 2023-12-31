@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -182,7 +183,7 @@ public class blueBottom extends LinearOpMode {
 
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
-        in.setDirection(DcMotor.Direction.REVERSE);
+        in.setDirection(DcMotor.Direction.FORWARD);
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
         d.setPoseEstimate(new Pose2d(-35, 72, -Math.PI/2));
@@ -222,14 +223,14 @@ public class blueBottom extends LinearOpMode {
         });
         telemetry.setMsTransmissionInterval(50);
         waitForStart();
-        Barcode result = Barcode.MIDDLE;
+        Barcode result = null;
         double cTime = getRuntime();
         while (getRuntime() < cTime + 3) {
             result = scanner.getResult();
         }
-        if (result.equals(null))
-            result = Barcode.LEFT
-                    ;
+        if (result == null)
+            result = Barcode.LEFT;
+
 
         r1.setPosition(0.04);
         r2.setPosition(0.05);
@@ -242,11 +243,10 @@ public class blueBottom extends LinearOpMode {
                         .turn(-Math.PI/2)
                         .build());
 
-                spitPixel(-0.4);
+                spitPixel(-0.3);
                 d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                .back(1.3)
                         .strafeLeft(13)
-                        .back(84)
+                        .back(82)
                         .strafeRight(9.4)
                         .build());
                 dropPixel(d);
@@ -262,12 +262,12 @@ public class blueBottom extends LinearOpMode {
                                .forward(50)
                                .turn(Math.PI)
                                .build());
-               spitPixel(-0.4);
+               spitPixel(-0.3);
                d.updatePoseEstimate();
                d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                        .back(1)
                        .turn(Math.PI / 2)
-                       .back(82)
+                       .back(81.2)
                        .strafeRight(14)
                        .build());
                dropPixel(d);
@@ -287,12 +287,12 @@ public class blueBottom extends LinearOpMode {
                                 .forward(2)
                         .build());
 
-                spitPixel(-0.4);
+                spitPixel(-0.3);
                 d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                         .back(1)
                         .strafeRight(13)
                                 .turn(Math.PI)
-                        .back(84.4)
+                        .back(82)
                         .strafeRight(18)
                         .build());
                 dropPixel(d);
