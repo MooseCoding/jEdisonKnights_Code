@@ -18,6 +18,8 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
 
     private int armPos;
 
+    boolean rightReady = false;
+    boolean leftReady = false;
 
     IMU imu;//x-axis rotation = , y-axis rotation = , z-axis rotation
 
@@ -163,6 +165,24 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 if (gamepad1.triangle)
                     lockedArm = !lockedArm;
 
+                if (gamepad1.circle)  //right
+                    r1.setPosition(0.04);
+
+
+                    if (gamepad1.square) //left
+                        r2.setPosition(0.05);
+
+                if (gamepad1.dpad_up && !dpadUnlock)
+                    arm--;
+
+                if (gamepad1.dpad_down && !dpadUnlock)
+                    arm++;
+
+
+                if (gamepad1.dpad_left && !dpadUnlock)
+                    arm = -1;
+
+
                 time = getRuntime();
             }
 
@@ -206,19 +226,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
             br.setPower(rightBackPower * mult);
 
 
-
-            /*
-            if (gamepad1.left_bumper) {
-                if (camOn) {
-                    visionPortal.stopStreaming();
-                    visionPortal.stopLiveView();
-                } else {
-                    visionPortal.resumeStreaming();
-                    visionPortal.resumeLiveView();
-                }
-            }
-            */
-
             if (gamepad1.right_trigger > 0 && !lockedArm)
                 in.setPower(-iP);
             else if (gamepad1.left_trigger > 0 && !lockedArm)
@@ -229,16 +236,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
             if (gamepad1.right_trigger > 0 && lockedArm && arm == -1) {
                 leftArm = true;
                 arm=0;
-            }
-            if (gamepad1.dpad_up && !dpadUnlock && buttonPress)
-                arm--;
-
-            if (gamepad1.dpad_down && !dpadUnlock && buttonPress) {
-                arm++;
-            }
-
-            if (gamepad1.dpad_left && !dpadUnlock && buttonPress) {
-                arm = -1;
             }
 
             if (gamepad1.left_stick_button) {
@@ -298,18 +295,21 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
 
                     }
                     if (pA.getCurrentPosition() <= 15) {
-                        armReset = false;
                         arm++;
                     }
                     break;
                 case 1:
-                    if (!armReset) {
+                    if (pixeR == 1 && r1.getPosition() == 0.04)
+                       rightReady = true;
+                    if (pixeL == 1 && r2.getPosition() == 0.05)
+                        leftReady = true;
+                    if (pixeL == 0)
+                        leftReady = true;
+                    if (pixeR == 0)
+                        rightReady = true;
+
+                    if (leftReady && rightReady) {
                         double t = getRuntime();
-                        while (getRuntime() < 0.8 + t) {}
-                        r1.setPosition(0.04);
-                        r2.setPosition(0.05);
-                        t = getRuntime();
-                        while(getRuntime() < 0.5 + t) {}
                         pA.setTargetPosition(458);
                         pA.setPower(1);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -364,12 +364,12 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                         }
                     }
 
-                        if (leftArm && gamepad1.circle && buttonPress && p1C > -1) {
+                        if (leftArm && gamepad1.circle && buttonPress && p1C > -1 && lockedArm) {
                             r1.setPosition(0.13);
                             pixeR = 0;
                         }
 
-                        if (leftArm && gamepad1.square && buttonPress && p2C > -1) {
+                        if (leftArm && gamepad1.square && buttonPress && p2C > -1 && lockedArm) {
                             r2.setPosition(0.126);
                             pixeL = 0;
                         }

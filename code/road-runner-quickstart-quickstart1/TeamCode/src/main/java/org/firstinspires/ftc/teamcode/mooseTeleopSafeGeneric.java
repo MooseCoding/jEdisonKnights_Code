@@ -62,6 +62,8 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
 
     private double iP = 0.6; //intake power
 
+    private double aT = -1;
+
     //private int currentAprilTagID;
 
 
@@ -137,7 +139,7 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                     }
                 }
                 if (dpadUnlock) {
-                    if (gamepad1.dpad_up) {
+                    if (gamepad2.dpad_up) {
                         arm = -2;
                         pA.setTargetPosition(2200);
                         pA.setPower(0.3);
@@ -147,20 +149,21 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                         am.setPower(0.3);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                    else if (gamepad1.dpad_down) {
+                    else if (gamepad2.dpad_down) {
                         pA.setTargetPosition(400);
                         pA.setPower(1);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                    if (gamepad1.dpad_left)
+                    if (gamepad2.dpad_left){
                         air.setPosition(0.3);
+                        aT = getRuntime();}
 
-                    if (gamepad1.dpad_right)
-                        air.setPosition(0.2015);
                 }
 
             }
+            if (aT != -1 && aT + 5 > getRuntime()) {
 
+            }
             //ignore every button input within a 0.2 sec timespan as its neglible to affect results
             double max;
 

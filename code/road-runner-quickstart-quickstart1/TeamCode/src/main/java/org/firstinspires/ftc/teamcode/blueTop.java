@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -30,7 +31,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Queue;
-
+@Disabled
 @Autonomous
 public class blueTop extends LinearOpMode {
     private void spitPixel(double p) {
@@ -213,7 +214,7 @@ public class blueTop extends LinearOpMode {
         Barcode result = Barcode.MIDDLE;;
         double cTime = getRuntime();
         while (getRuntime() < cTime + 2) {
-            result = scanner.getResult();
+            result = scanner.getResult(3);
             telemetry.addData("result", result);
             telemetry.update();
         }

@@ -13,6 +13,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class RedScanner extends OpenCvPipeline {
 
+    Timer t = new Timer();
+
     Mat mat = new Mat();
     Mat leftMat = new Mat();
     Mat midMat = new Mat();
@@ -82,8 +84,9 @@ public class RedScanner extends OpenCvPipeline {
         return input;
     }
 
-    public Barcode getResult() {
-        while (result == null);
+    public Barcode getResult(int time) {
+        double cTime = t.getTimeSys();
+        while (cTime + time > t.getTimeSys());
         return result;
     }
 }

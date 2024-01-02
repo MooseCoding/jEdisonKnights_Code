@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -51,7 +50,7 @@ public class BlueAutoVision extends LinearOpMode {
         runTime.reset();
         double cTime = getRuntime();
         while (getRuntime() < cTime + 3) {
-            result = scanner.getResult();
+            result = scanner.getResult(3);
         }
         if (result.equals(null)) {
             result = Barcode.LEFT;

@@ -10,8 +10,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-import org.firstinspires.ftc.teamcode.vision.RedScanner;
-import org.firstinspires.ftc.teamcode.vision.Barcode;
 
 
 @Autonomous(name = "RedWebcamAutoTest", group = "drive")
@@ -55,7 +53,7 @@ public class RedAutoVision extends LinearOpMode {
 
         runTime.reset();
 
-        Barcode result = scanner.getResult();
+        Barcode result = scanner.getResult(3);
 
         switch (result) {
             case LEFT:

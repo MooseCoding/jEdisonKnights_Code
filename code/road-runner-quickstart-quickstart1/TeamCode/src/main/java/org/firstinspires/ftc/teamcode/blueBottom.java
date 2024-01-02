@@ -1,37 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import org.firstinspires.ftc.teamcode.vision.BlueScanner;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.vision.RedScanner;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.firstinspires.ftc.teamcode.vision.Barcode;
-import org.firstinspires.ftc.teamcode.vision.BlueScanner;
+import org.firstinspires.ftc.teamcode.vision.RedScanner;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Queue;
 
 @Autonomous
 public class blueBottom extends LinearOpMode {
@@ -221,13 +203,12 @@ public class blueBottom extends LinearOpMode {
 
             }
         });
-        telemetry.setMsTransmissionInterval(50);
+        telemetry.setMsTransmissionInterval(5);
         waitForStart();
         Barcode result = null;
-        double cTime = getRuntime();
-        while (getRuntime() < cTime + 3) {
-            result = scanner.getResult();
-        }
+
+        result = scanner.getResult(3);
+
         if (result == null)
             result = Barcode.LEFT;
 
