@@ -201,7 +201,7 @@ public class motorTester extends LinearOpMode {
                 if (c1.getLightDetected() == 1)
                     p1C = 0;
 
-                else if (c1.getLightDetected() > 0.9)
+                else if (c1.getRawLightDetected() > 1900 || c1.getLightDetected() < 0.5)
                     p1C = 3;
 
                 else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
@@ -215,9 +215,9 @@ public class motorTester extends LinearOpMode {
                 p1C = -1;
 
             if (c2.getRawLightDetected() > 300) {
-                if ((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.257) && c2.red() != c2.green())
+                if((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)&& (c2.getRawLightDetected() < 750 && c2.getRawLightDetected() > 730) )
                     p2C = 1;
-                else if (c2.getRawLightDetected() > 750)
+                else if (c2.getRawLightDetected() > 850)
                     p2C = 0;
                 else if (c2.getRawLightDetected() > 600)
                     p2C = 3;

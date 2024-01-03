@@ -165,12 +165,16 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 if (gamepad1.triangle)
                     lockedArm = !lockedArm;
 
-                if (gamepad1.circle)  //right
+                if (gamepad1.circle && arm == 1) { //right
                     r1.setPosition(0.04);
 
+                    rightReady = true;
+                }
 
-                    if (gamepad1.square) //left
-                        r2.setPosition(0.05);
+                if (gamepad1.square && arm == 1) {//left
+                    r2.setPosition(0.05);
+                leftReady = true;
+            }
 
                 if (gamepad1.dpad_up && !dpadUnlock)
                     arm--;
@@ -284,32 +288,27 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                            am.setTargetPosition(-50);
-                        am.setPower(1);
+                            am.setTargetPosition(-60);
+                        am.setPower(0.1);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-                    if (am.getCurrentPosition() >= -52) {
+                    if (am.getCurrentPosition() >= -110) {
                         pA.setTargetPosition(0);
                         pA.setPower(0.3);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                     }
-                    if (pA.getCurrentPosition() <= 15) {
+                    if (pA.getCurrentPosition() <= 30) {
                         arm++;
                     }
                     break;
                 case 1:
-                    if (pixeR == 1 && r1.getPosition() == 0.04)
-                       rightReady = true;
-                    if (pixeL == 1 && r2.getPosition() == 0.05)
-                        leftReady = true;
                     if (pixeL == 0)
                         leftReady = true;
                     if (pixeR == 0)
                         rightReady = true;
 
                     if (leftReady && rightReady) {
-                        double t = getRuntime();
                         pA.setTargetPosition(458);
                         pA.setPower(1);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -386,7 +385,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     if (c1.getLightDetected() == 1)
                         p1C = 0;
 
-                    else if (c1.getLightDetected() > 0.9)
+                    else if (c1.getRawLightDetected() > 1900)
                         p1C = 3;
 
                     else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
@@ -398,7 +397,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 }
 
                 if (c2.getRawLightDetected() > 300) {
-                    if (c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)
+                    if((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)&& (c2.getRawLightDetected() < 750 && c2.getRawLightDetected() > 730) )
                         p2C = 1;
                     else if (c2.getRawLightDetected() > 750)
                         p2C = 0;
@@ -454,7 +453,9 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     color2 = "purple";
                     break;
             }
-
+            telemetry.addData("am pos", am.getCurrentPosition());
+            telemetry.addData("trues", leftReady);
+                    telemetry.addData("right", rightReady);
             telemetry.addData("is slow mode", mult==0.4);
             telemetry.addData("locked arm", lockedArm);
             telemetry.addData("dpad unlocked", dpadUnlock);

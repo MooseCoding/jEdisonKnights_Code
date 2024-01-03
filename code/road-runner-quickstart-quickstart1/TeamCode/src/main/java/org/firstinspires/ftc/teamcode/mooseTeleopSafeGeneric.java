@@ -240,7 +240,7 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
             //}
 
 
-            switch(arm) {
+ ;            switch(arm) {
                 case -1:
                     if (armReset) {
                         r1.setPosition(0.126);
@@ -261,18 +261,17 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                        am.setTargetPosition(-50);
+                        am.setTargetPosition(-36);
                         am.setPower(1);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                    if (am.getCurrentPosition() >= -52) {
+                    if (am.getCurrentPosition() >= -40) {
                         pA.setTargetPosition(0);
                         pA.setPower(0.3);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                     }
                     if (pA.getCurrentPosition() <= 15) {
-                        armReset = false;
                         arm++;
                     }
                     break;
