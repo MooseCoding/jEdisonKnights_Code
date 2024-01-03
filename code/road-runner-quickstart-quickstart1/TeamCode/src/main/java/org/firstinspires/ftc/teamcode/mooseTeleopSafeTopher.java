@@ -336,31 +336,34 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     break;
             }
                 if (c1.getRawLightDetected() > 400) {
-                    if (c1.getLightDetected() == 1)
-                        p1C = 0;
+                if (c1.getLightDetected() == 1)
+                    p1C = 0;
 
-                    else if (c1.getRawLightDetected() > 1900)
-                        p1C = 3;
+                else if (c1.getRawLightDetected() > 1900 || c1.getLightDetected() < 0.5)
+                    p1C = 3;
 
-                    else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
-                        p1C = 1;
+                else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
+                    p1C = 1;
 
-                    else
-                        p1C = 2;
+                else
+                    p1C = 2;
 
-                }
+            }
+            else
+                p1C = -1;
 
-                if (c2.getRawLightDetected() > 300) {
-                    if((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)&& (c2.getRawLightDetected() < 750 && c2.getRawLightDetected() > 730) )
-                        p2C = 1;
-                    else if (c2.getRawLightDetected() > 750)
-                        p2C = 0;
-                    else if (c2.getRawLightDetected() > 600)
-                        p2C = 3;
-                    else
-                        p2C = 2;
-                }
-
+            if (c2.getRawLightDetected() > 300) {
+                if((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)&& (c2.getRawLightDetected() < 750 && c2.getRawLightDetected() > 730) )
+                    p2C = 1;
+                else if (c2.getRawLightDetected() > 850)
+                    p2C = 0;
+                else if (c2.getRawLightDetected() > 600)
+                    p2C = 3;
+                else
+                    p2C = 2;
+            }
+            else
+                p2C =-1;
 
 
             if (getRuntime() > 90 || gamepad1.dpad_right)
