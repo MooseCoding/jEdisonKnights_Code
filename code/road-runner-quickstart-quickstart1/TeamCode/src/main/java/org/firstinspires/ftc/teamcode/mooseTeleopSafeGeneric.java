@@ -162,7 +162,7 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
 
             }
             if (aT != -1 && aT + 5 > getRuntime()) {
-
+                air.setPosition(0.2015);
             }
             //ignore every button input within a 0.2 sec timespan as its neglible to affect results
             double max;
@@ -240,7 +240,7 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
             //}
 
 
- ;            switch(arm) {
+             switch(arm) {
                 case -1:
                     if (armReset) {
                         r1.setPosition(0.126);
@@ -248,11 +248,11 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                         am.setTargetPosition(-120);
                         am.setPower(0.6);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        pA.setTargetPosition(490);
-                        pA.setPower(0.6);
-                        pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pA.setTargetPosition(490);
+                    pA.setPower(0.6);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                        armReset = false;
+                    armReset = false;
                     }
                     break;
                 case 0:
@@ -261,17 +261,17 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                        am.setTargetPosition(-36);
-                        am.setPower(1);
+                            am.setTargetPosition(-60);
+                        am.setPower(0.1);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    }
-                    if (am.getCurrentPosition() >= -40) {
+                }
+                    if (am.getCurrentPosition() >= -110) {
                         pA.setTargetPosition(0);
                         pA.setPower(0.3);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                     }
-                    if (pA.getCurrentPosition() <= 15) {
+                    if (pA.getCurrentPosition() <= 30) {
                         arm++;
                     }
                     break;
@@ -333,11 +333,11 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                     }
                     break;
             }
-            if (c1.getRawLightDetected() > 400) {
+           if (c1.getRawLightDetected() > 400) {
                 if (c1.getLightDetected() == 1)
                     p1C = 0;
 
-                else if (c1.getLightDetected() > 0.9)
+                else if (c1.getRawLightDetected() > 1900 || c1.getLightDetected() < 0.5)
                     p1C = 3;
 
                 else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
@@ -347,18 +347,21 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                     p1C = 2;
 
             }
+            else
+                p1C = -1;
 
             if (c2.getRawLightDetected() > 300) {
-                if (c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)
+                if((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)&& (c2.getRawLightDetected() < 750 && c2.getRawLightDetected() > 730) )
                     p2C = 1;
-                else if (c2.getRawLightDetected() > 750)
+                else if (c2.getRawLightDetected() > 850)
                     p2C = 0;
                 else if (c2.getRawLightDetected() > 600)
                     p2C = 3;
                 else
                     p2C = 2;
             }
-
+            else
+                p2C =-1;
 
 
             if (getRuntime() > 90)
