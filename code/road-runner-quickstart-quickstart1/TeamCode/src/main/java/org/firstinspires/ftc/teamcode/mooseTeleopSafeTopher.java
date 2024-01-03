@@ -12,60 +12,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
 public class mooseTeleopSafeTopher extends LinearOpMode {
-
-    String color1;
-    String color2;
-
-    private int armPos;
-
-    boolean rightReady = false;
-    boolean leftReady = false;
-
-    IMU imu;//x-axis rotation = , y-axis rotation = , z-axis rotation
-
+    private String color1, color2;
+    private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
     private RevColorSensorV3 c1, c2;
-
-    private DcMotor br;
-    private DcMotor fr;
-    private DcMotor bl;
-    private DcMotor fl;
-
-    private int pixeR = 0, pixeL = 0;
-    private int p1, p2;
-
-    private double cValue;
-
-    private DcMotor in; //intake
-    private boolean lockedArm, dpadUnlock = false;
-
-    private DcMotor pA;
-
-    private double speedMulti = 1.0; //multiplier for running motors at speed
-
-    private double mult = 1;
-
-    private DcMotor am;
-
-    private Servo air;
-    private double turnMult = 0.8;
-
-    private boolean armReset = true;
-
-    boolean leftArm = false, planeActive = true;
-
-    //private Servo e1, e2;
-   private Servo r1, r2;
-
-   private Rev2mDistanceSensor d1;
-
-   private int arm = -1;
-
-   private int p1C, p2C; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
-
-    private double iP = 0.6; //intake power
-
-    //private int currentAprilTagID;
-
+    private DcMotor br, fr, bl, fl, in, pA, am;
+    private double speedMulti = 1.0, mult = 1, aT = -1, cValue, turnMult = 0.8, iP = 0.6; //multiplier for running motors at speed
+    private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false;
+    private Servo r1, r2, air, bell;
+    private Rev2mDistanceSensor d1;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
@@ -86,12 +40,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 .build();
 
          */
-        imu = hardwareMap.get(IMU.class, "imu");
-        RevHubOrientationOnRobot.LogoFacingDirection[] logoFacingDirections
-                = RevHubOrientationOnRobot.LogoFacingDirection.values();
-        RevHubOrientationOnRobot.UsbFacingDirection[] usbFacingDirections
-                = RevHubOrientationOnRobot.UsbFacingDirection.values();
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(logoFacingDirections[0], usbFacingDirections[5])));
 
         br = hardwareMap.get(DcMotor.class, "br");
         fr = hardwareMap.get(DcMotor.class, "fr");
@@ -143,8 +91,10 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     planeActive = false;
                 }
 
-                if (gamepad1.dpad_left && dpadUnlock)
+                if (gamepad1.dpad_left && dpadUnlock) {
                     air.setPosition(0.3);
+                    aT = getRuntime();
+                }
 
                 if (gamepad1.dpad_up && dpadUnlock) {
                     arm = -2;
@@ -228,6 +178,10 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
             bl.setPower(leftBackPower * mult);
             fr.setPower(rightFrontPower * mult);
             br.setPower(rightBackPower * mult);
+
+            if (aT != -1 && aT + 5 > getRuntime()) 
+                air.setPosition(0.2015);
+            
 
 
             if (gamepad1.right_trigger > 0 && !lockedArm)
