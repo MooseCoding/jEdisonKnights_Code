@@ -137,6 +137,7 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
                         turnMult = 0.8;
                         gamepad1.rumble(0, 1, 100);
                     }
+
                 }
                 if (dpadUnlock) {
                     if (gamepad2.dpad_up) {
@@ -214,8 +215,11 @@ public class mooseTeleopSafeGeneric extends LinearOpMode {
             else
                 in.setPower(0);
 
-            if (gamepad1.triangle) {
-                arm=0;
+            if (gamepad1.triangle && buttonPress) {
+                arm++;
+            }
+            else if (gamepad1.cross && buttonPress) {
+                arm--;
             }
 
 
