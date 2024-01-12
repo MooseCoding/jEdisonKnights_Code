@@ -28,6 +28,8 @@ public class RedScanner extends OpenCvPipeline {
     private Barcode result = null;
     private Telemetry telemetry;
 
+    private double leftValue, midValue, rightValue;
+
     public RedScanner(Telemetry t) { telemetry = t; }
 
     @Override
@@ -46,9 +48,9 @@ public class RedScanner extends OpenCvPipeline {
         midMat = mat.submat(midROI);
         rightMat = mat.submat(rightROI);
 
-        double leftValue = Core.sumElems(leftMat).val[0];
-        double midValue = Core.sumElems(midMat).val[0];
-        double rightValue = Core.sumElems(rightMat).val[0];
+         leftValue = Core.sumElems(leftMat).val[0];
+         midValue = Core.sumElems(midMat).val[0];
+         rightValue = Core.sumElems(rightMat).val[0];
         telemetry.addData("Left", leftValue);
         telemetry.addData("Middle", midValue);
         telemetry.addData("Right", rightValue);
@@ -84,9 +86,12 @@ public class RedScanner extends OpenCvPipeline {
         return input;
     }
 
-    public Barcode getResult(int time) {
+    public Barcode getResult(double time) {
         double cTime = t.getTimeSys();
         while (cTime + time > t.getTimeSys());
+        if (leftValue > 0) {
+            result = Barcode.LEFT;
+        }
         return result;
     }
 }

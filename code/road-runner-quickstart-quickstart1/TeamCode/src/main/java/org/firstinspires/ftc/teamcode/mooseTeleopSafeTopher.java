@@ -15,6 +15,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
     private String color1, color2;
     private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
     private RevColorSensorV3 c1, c2;
+
     private DcMotor br, fr, bl, fl, in, pA, am;
     private double speedMulti = 1.0, mult = 1, iP = 0.6; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false;
@@ -271,22 +272,22 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     break;
                 case 2:
                     if (armReset) {
-                        pA.setTargetPosition(2382);
+                        pA.setTargetPosition(2182);
                         pA.setPower(0.6);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        am.setTargetPosition(186);
+                        am.setTargetPosition(190);
                         am.setPower(0.2);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armPos = 0;
                     }
-                    if (pA.getCurrentPosition() >= 2380 && am.getCurrentPosition() >= 150) {
+                    if (pA.getCurrentPosition() >= 2180 && am.getCurrentPosition() >= 180) {
                         arm++;
                     }
                     break;
                 case 3:
                     if (gamepad1.cross && buttonPress && lockedArm) {
                         if(armPos == 2) {
-                            pA.setTargetPosition(2382);
+                            pA.setTargetPosition(2182);
                             pA.setPower(0.8);
                             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             am.setTargetPosition(190);
@@ -295,13 +296,13 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                             armPos = 0;
                         }
                         else if (armPos == 1){
-                            pA.setTargetPosition(2582);
+                            pA.setTargetPosition(2832);
                             pA.setPower(0.6);
                             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             armPos = 2;
                         }
                         else {
-                            pA.setTargetPosition(2782);
+                            pA.setTargetPosition(2582);
                             pA.setPower(0.5);
                             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             armPos = 1;

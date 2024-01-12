@@ -60,7 +60,7 @@ public class motorTester extends LinearOpMode {
     private DcMotor pA;
 
     private DcMotor am;
-    private Servo r1, r2;
+    private Servo r1, r2, air;
 
     private RevColorSensorV3 c1, c2;
     boolean speedMultiOn;
@@ -106,6 +106,7 @@ public class motorTester extends LinearOpMode {
         r2.setDirection(Servo.Direction.REVERSE);
 
         pA = hardwareMap.get(DcMotor.class, "pA");
+        air = hardwareMap.get(Servo.class, "air");
         //pA2 = hardwareMap.get(DcMotor.class, "pA2"); //must be run at a negative power relative to pA1
         pA.setDirection(DcMotorSimple.Direction.FORWARD);
         //pA2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -152,22 +153,14 @@ public class motorTester extends LinearOpMode {
                 bl.setPower(0);
             }
 
-            if (gamepad1.dpad_up) {
-                r1.setPosition(0.17);
-                r2.setPosition(0.87);
+            if (gamepad1.dpad_right) {
+                air.setPosition(0.2);
             }
-            if (gamepad1.dpad_down) {
-                r1.setPosition(0.18);
-                r2.setPosition(0.86);
-            }
-            if(gamepad1.dpad_right) {
-                r1.setPosition(0.042);
-                r2.setPosition(0.052);
-            }
+
             if (gamepad1.dpad_left) {
-                r1.setPosition(0.126);
-                r2.setPosition(0.13);
+                air.setPosition(0.3);
             }
+
             if (gamepad1.right_bumper) {
                pA.setPower(1);
             }

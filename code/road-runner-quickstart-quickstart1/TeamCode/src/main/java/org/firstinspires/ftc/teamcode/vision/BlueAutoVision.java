@@ -11,7 +11,6 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Disabled
 @Autonomous(name = "BlueWebcamAutoTest", group = "drive")
 public class BlueAutoVision extends LinearOpMode {
     private ElapsedTime runTime = new ElapsedTime();

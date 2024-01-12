@@ -30,6 +30,11 @@ public class redBottom extends LinearOpMode {
             pA.setPower(0.6);
             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+            am.setTargetPosition(-120);
+            am.setPower(0.6);
+            am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            while(am.getCurrentPosition() > -110);
             am.setTargetPosition(152);
             am.setPower(0.2);
             am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -44,7 +49,6 @@ public class redBottom extends LinearOpMode {
 
             d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                             .forward(2)
-                            .back(2)
                     .build());
 
             am.setTargetPosition(0);
@@ -53,100 +57,10 @@ public class redBottom extends LinearOpMode {
             pA.setTargetPosition(0);
             pA.setPower(0.7);
             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        /*
-        int arm = -1;
-        boolean armReset = true;
-        boolean leftArm = false;
-        switch (arm) {
-            case -1:
-                if (armReset) {
-                    r1.setPosition(0.126);
-                    r2.setPosition(0.13);
-                    pA.setTargetPosition(hPA);
-                    pA.setPower(0.6);
-                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    am.setTargetPosition(hAM);
-                    am.setPower(0.1);
-                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armReset = false;
-                }
-                break;
-            case 0:
-                if (!armReset) {
-                    am.setTargetPosition(-66);
-                    am.setPower(0.5);
-                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armReset = true;
-                }
-                if (am.getCurrentPosition() <= -60) {
-                    pA.setTargetPosition(60);
-                    pA.setPower(0.5);
-                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-                if (pA.getCurrentPosition() <= 90) {
-                    arm++;
-                    armReset = false;
-                }
-                break;
-            case 1:
-                if (!armReset) {
-                    double t = getRuntime();
-                    while (getRuntime() < 0.5 + t) {
-                    }
-                    r1.setPosition(0.04);
-                    r2.setPosition(0.05);
-                    t = getRuntime();
-                    while (getRuntime() < 0.2 + t) {
-                    }
-                    pA.setTargetPosition(403);
-                    pA.setPower(0.4);
-                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    am.setTargetPosition(s2AM);
-                    am.setPower(0.6);
-                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armReset = true;
-                }
-                if (pA.getCurrentPosition() >= 400 && am.getCurrentPosition() <= s2PA + 4) {
-                    arm++;
-                }
-                break;
-            case 2:
-                if (armReset) {
-
-                    pA.setTargetPosition(s3PA);
-                    pA.setPower(0.6);
-                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-                    am.setTargetPosition(s3AM);
-                    am.setPower(0.2);
-                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-                if (pA.getCurrentPosition() >= s3PA - 1 && am.getCurrentPosition() >= s3AM - 1) {
-                    arm++;
-                }
-                break;
-            case 3:
-
-                    r1.setPosition(0.13);
-
-
-                    r2.setPosition(0.126);
-
-                double t =getRuntime();
-                while (t + 3 > getRuntime()) {}
-                break;
-        }*/
     }
-
-
-
-
     private DcMotor pA, in, am;
 
     private Servo r1, r2;
-    private Recognition r;
 
     @Override
     public void runOpMode() {
@@ -180,65 +94,56 @@ public class redBottom extends LinearOpMode {
 
             }
         });
+        Barcode result = null;
         telemetry.setMsTransmissionInterval(5);
-
-        waitForStart();
-
+        while(!isStarted()) {
+            result = scanner.getResult(0.01);
+            telemetry.addData("result", result);
+        }
         r1.setPosition(0.04);
         r2.setPosition(0.05);
-
-        Barcode result = null;
-
-        result = scanner.getResult(3);
-
-        if (result == null)
-            result = Barcode.LEFT;
-
-
-
         if (result != null) {
             switch (result) {
                 case RIGHT:
-                    telemetry.addData("Dectected", result);
+                    telemetry.addData("Dectected", "R");
 
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeLeft(1)
-                            .forward(31.5)
-                            .turn(-Math.PI/2)
+                            .strafeRight(1)
+                            .back(31.5)
+                            .turn(Math.PI/2)
                             .build());
 
-                    spitPixel(0.4);
+                    spitPixel(0.34);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                             .back(5)
                             .turn(Math.PI/2)
                             .strafeLeft(2)
                             .forward(24)
                             .turn(Math.PI/2)
-                            .back(90)
-                            .strafeLeft(18.5)
+                            .back(92)
+                            .strafeLeft(17.9)
                             .build());
 
                     dropPixel(d);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeRight(17)
-                            .back(18)
+                            .strafeRight(18)
+                            .back(20)
                             .build());
                 case MIDDLE:
-                    telemetry.addData("Dectected", result);
+                    telemetry.addData("Dectected", "M");
                     d.setPoseEstimate(d.getPoseEstimate());
                     d.followTrajectorySequence(
                             d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                    .forward(50)
-                                    .turn(Math.PI)
+                                    .back(50)
                                     .build());
-                    spitPixel(0.4);
+                    spitPixel(0.33);
                     d.updatePoseEstimate();
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(3)
+                                    .back(3)
                             .turn(-Math.PI / 2)
-                                    .strafeRight(1)
-                            .back(78)
-                            .strafeLeft(12)
+
+                            .back(82)
+                            .strafeLeft(16)
                             .build());
                     dropPixel(d);
                     d.updatePoseEstimate();
@@ -249,22 +154,21 @@ public class redBottom extends LinearOpMode {
                             .build());
                     break;
                 case LEFT: // red left
-                    telemetry.addData("Dectected", result);
-
+                    telemetry.addData("Dectected", "L");
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                    .forward(28)
-                                    .turn(Math.PI/2)
+                                    .back(28)
+                                    .turn(-Math.PI/2)
                             .build());
 
-                    spitPixel(0.37);
+                    spitPixel(0.34);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                                     .strafeRight(14)
-                            .back(78.5)
-                            .strafeLeft(9.4)
+                            .back(82)
+                            .strafeLeft(12)
                             .build());
                     dropPixel(d);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeRight(13)
+                            .strafeRight(14)
                             .back(7)
                             .build());
                     break;
