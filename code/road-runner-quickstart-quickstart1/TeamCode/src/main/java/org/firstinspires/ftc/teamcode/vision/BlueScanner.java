@@ -57,7 +57,7 @@ public class BlueScanner extends OpenCvPipeline {
         midMat.release();
         rightMat.release();
 
-        double maxValue = Math.max(leftValue, Math.max(midValue, rightValue));
+        double maxValue = Math.max(leftValue, Math.max(midValue-150000, rightValue));
         Scalar matchColor = new Scalar(0, 255, 0);
         Scalar mismatchColor = new Scalar(255, 0, 0);
 
@@ -87,9 +87,6 @@ public class BlueScanner extends OpenCvPipeline {
     public Barcode getResult(double time) {
         double cTime = t.getTimeSys();
         while (cTime + time > t.getTimeSys());
-        if (leftValue > 0) {
-            result = Barcode.LEFT;
-        }
         return result;
     }
 }

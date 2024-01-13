@@ -60,7 +60,7 @@ public class motorTester extends LinearOpMode {
     private DcMotor pA;
 
     private DcMotor am;
-    private Servo r1, r2, air;
+    private Servo r1, r2, air, b;
 
     private RevColorSensorV3 c1, c2;
     boolean speedMultiOn;
@@ -107,9 +107,11 @@ public class motorTester extends LinearOpMode {
 
         pA = hardwareMap.get(DcMotor.class, "pA");
         air = hardwareMap.get(Servo.class, "air");
+        b = hardwareMap.get(Servo.class, "bell");
         //pA2 = hardwareMap.get(DcMotor.class, "pA2"); //must be run at a negative power relative to pA1
         pA.setDirection(DcMotorSimple.Direction.FORWARD);
         //pA2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        b.setPosition(0);
 
         speedMulti = 1;
         speedMultiOn = false;
@@ -178,86 +180,15 @@ public class motorTester extends LinearOpMode {
             telemetry.addData(" motor speed", pA.getPower());
             telemetry.addData(" encoder pos", pA.getCurrentPosition());
             telemetry.addData("am pos", am.getCurrentPosition());
-            telemetry.addData("c1 raw", c1.getRawLightDetected());
-            telemetry.addData("c1 unraw", c1.getLightDetected());
-            telemetry.addData("c1 green", c1.green());
-            telemetry.addData("c1 red", c1.red());
-            telemetry.addData("c1 blue", c1.blue());
-            telemetry.addData("c2 raw", c2.getRawLightDetected());
-            telemetry.addData("c2 unraw", c2.getLightDetected());
-            telemetry.addData("c2 green", c2.green());
-            telemetry.addData("c2 red", c2.red());
-            telemetry.addData("c2 blue", c2.blue());
-            int p1C= 0, p2C = 0;
-            String color1 = "", color2 = "";
-            if (c1.getRawLightDetected() > 400) {
-                if (c1.getLightDetected() == 1)
-                    p1C = 0;
 
-                else if (c1.getRawLightDetected() > 1900 || c1.getLightDetected() < 0.5)
-                    p1C = 3;
-
-                else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
-                    p1C = 1;
-
-                else
-                    p1C = 2;
-
+            if (gamepad1.right_trigger > 0) {
+                b.setPosition(b.getPosition()+0.01);
             }
-            else
-                p1C = -1;
-
-            if (c2.getRawLightDetected() > 300) {
-                if((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)&& (c2.getRawLightDetected() < 750 && c2.getRawLightDetected() > 730) )
-                    p2C = 1;
-                else if (c2.getRawLightDetected() > 850)
-                    p2C = 0;
-                else if (c2.getRawLightDetected() > 600)
-                    p2C = 3;
-                else
-                    p2C = 2;
-            }
-            else
-                p2C =-1;
-
-            switch (p1C) {
-                case -1:
-                    color1 = "no pixel";
-                    break;
-                case 0:
-                    color1 = "white";
-                    break;
-                case 1:
-                    color1 = "green";
-                    break;
-                case 2:
-                    color1 = "yellow";
-                    break;
-                case 3:
-                    color1 = "purple";
-                    break;
-            }
-
-            switch (p2C) {
-                case -1:
-                    color2 = "no pixel";
-                    break;
-                case 0:
-                    color2 = "white";
-                    break;
-                case 1:
-                    color2 = "green";
-                    break;
-                case 2:
-                    color2 = "yellow";
-                    break;
-                case 3:
-                    color2 = "purple";
-                    break;
+            else if (gamepad1.left_trigger > 0) {
+                b.setPosition(b.getPosition()-0.01);
             }
             telemetry.addLine();
-            telemetry.addData("right pixel", color1);
-            telemetry.addData("left pixel", color2);
+            telemetry.addData("bell pos", b.getPosition());
             telemetry.update();
         }
     }

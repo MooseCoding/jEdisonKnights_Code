@@ -89,9 +89,6 @@ public class RedScanner extends OpenCvPipeline {
     public Barcode getResult(double time) {
         double cTime = t.getTimeSys();
         while (cTime + time > t.getTimeSys());
-        if (leftValue > 0) {
-            result = Barcode.LEFT;
-        }
         return result;
     }
 }

@@ -17,7 +17,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
     private RevColorSensorV3 c1, c2;
 
     private DcMotor br, fr, bl, fl, in, pA, am;
-    private double speedMulti = 1.0, mult = 1, iP = 0.6; //multiplier for running motors at speed
+    private double speedMulti = 1.0, mult = 1, iP = 0.45; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false;
     private Servo r1, r2, air, bell;
     private Rev2mDistanceSensor d1;
@@ -124,15 +124,29 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
             }
 
                 if (gamepad1.dpad_up && !dpadUnlock)
-                    arm--;
+                    arm++;
 
                 if (gamepad1.dpad_down && !dpadUnlock)
-                    arm++;
+                    arm--;
 
 
                 if (gamepad1.dpad_left && !dpadUnlock)
                     arm = -1;
 
+                if (gamepad1.left_bumper && gamepad1.right_stick_button) {
+                    arm = -3;
+                    am.setTargetPosition(0);
+                    am.setPower(1);
+                    am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pA.setTargetPosition(0);
+                    pA.setPower(1);
+                    pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+                if (gamepad1.left_stick_button && gamepad1.left_bumper) {
+                    pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                }
 
                 time = getRuntime();
             }
@@ -193,27 +207,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 pixeL = 1;
                 pixeR = 1;
             }
-
-            //if (gamepad1.circle) {
-            //look for april tags on the left
-            //currentAprilTagID = tag.id();
-            //telemetry.addData("current tag left", currentAprilTagID);
-            //}
-
-            //if (gamepad1.square) {
-            //look for april tags on the right
-            //while (
-            //currentAprilTagID = tag.id();
-            //telemetry.addData("current tag right", currentAprilTagID);
-            //}
-
-            //if (gamepad1.cross) {
-            //go to selected april tag that is on the telemetry output
-            //aprilTheta = (int) Math.atan(tag.ftcPose.y / tag.ftcPose.x);
-            //aprilDistance = (int) Math.sqrt((tag.ftcPose.z * tag.ftcPose.z) + (tag.ftcPose.x * tag.ftcPose.x));
-            //}
-
-
             switch(arm) {
                 case -1:
                     if (armReset) {
@@ -235,12 +228,12 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                            am.setTargetPosition(-60);
-                        am.setPower(0.1);
+                            am.setTargetPosition(-70);
+                        am.setPower(0.4);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-                    if (am.getCurrentPosition() >= -110) {
-                        pA.setTargetPosition(0);
+                    if (am.getCurrentPosition() >= -100) {
+                        pA.setTargetPosition(10);
                         pA.setPower(0.3);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -255,7 +248,9 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     if (pixeR == 0)
                         rightReady = true;
 
-                    if (leftReady && rightReady) {
+                   if (leftReady && rightReady) {
+                        double t = getRuntime();
+                        while (t + 0.7  > getRuntime());
                         pA.setTargetPosition(458);
                         pA.setPower(1);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -272,15 +267,18 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     break;
                 case 2:
                     if (armReset) {
-                        pA.setTargetPosition(2182);
+
+
+                        pA.setTargetPosition(2532);
                         pA.setPower(0.6);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
                         am.setTargetPosition(190);
                         am.setPower(0.2);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armPos = 0;
+                        armPos = 2;
                     }
-                    if (pA.getCurrentPosition() >= 2180 && am.getCurrentPosition() >= 180) {
+                    if (pA.getCurrentPosition() >= 2180 && am.getCurrentPosition() >= 165) {
                         arm++;
                     }
                     break;
@@ -296,10 +294,9 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                             armPos = 0;
                         }
                         else if (armPos == 1){
-                            pA.setTargetPosition(2832);
+                            pA.setTargetPosition(2582);
                             pA.setPower(0.6);
                             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            armPos = 2;
                         }
                         else {
                             pA.setTargetPosition(2582);

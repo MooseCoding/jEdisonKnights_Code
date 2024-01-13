@@ -92,17 +92,15 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(40, 22, Math.toRadians(180), Math.toRadians(180), 18.46)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-34, -72+18, Math.PI/2))
-                                .forward(50)
-                                .turn(Math.PI)
-                                .forward(4)
-                                .back(7)
+                        drive.trajectorySequenceBuilder(new Pose2d(-34, -72+18, -Math.PI/2))
+                                .back(50)
+                                .back(3)
                                 .turn(-Math.PI/2)
-                                .back(85)
+                                .back(82)
                                 .strafeLeft(16)
+                                .strafeRight(14)
+                                .back(8)
 
-                                .forward(10)
-                        .splineTo(new Vector2d(56, -10), Math.PI)
                         .build());
 
 

@@ -108,19 +108,16 @@ public class redBottom extends LinearOpMode {
                     telemetry.addData("Dectected", "R");
 
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeRight(1)
                             .back(31.5)
                             .turn(Math.PI/2)
                             .build());
 
                     spitPixel(0.34);
+
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(5)
-                            .turn(Math.PI/2)
-                            .strafeLeft(2)
-                            .forward(24)
-                            .turn(Math.PI/2)
-                            .back(92)
+                            .strafeLeft(12)
+                            .turn(-Math.PI)
+                            .back(86)
                             .strafeLeft(17.9)
                             .build());
 
@@ -142,7 +139,7 @@ public class redBottom extends LinearOpMode {
                                     .back(3)
                             .turn(-Math.PI / 2)
 
-                            .back(82)
+                            .back(83.5)
                             .strafeLeft(16)
                             .build());
                     dropPixel(d);
@@ -180,7 +177,6 @@ public class redBottom extends LinearOpMode {
                 d.updatePoseEstimate();
             }
         }
-
     }
 
 }

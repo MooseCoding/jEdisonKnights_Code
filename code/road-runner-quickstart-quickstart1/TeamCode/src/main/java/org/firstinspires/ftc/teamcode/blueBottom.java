@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -77,26 +78,11 @@ public class blueBottom extends LinearOpMode {
 
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
-        in.setDirection(DcMotor.Direction.FORWARD);
+        in.setDirection(DcMotor.Direction.REVERSE);
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
         d.setPoseEstimate(new Pose2d(-35, 72, -Math.PI / 2));
 
-        /*
-        while(r == null || r.getConfidence() < 0.8 && getRuntime() < 1.5) {
-            r = tfod.getRecognitions().get(0);
-        }
-        if (r == null) {
-            prop = 0;
-        }
-        else {
-            propTheta = r.estimateAngleToObject(AngleUnit.DEGREES);
-
-            if (propTheta <= 20 && propTheta >= -20)
-                prop = 1;
-            else
-                prop = 2;
-        }*/
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
         RedScanner scanner = new RedScanner(telemetry);
@@ -127,7 +113,7 @@ public class blueBottom extends LinearOpMode {
                     telemetry.addData("Dectected", result);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                             .back(28)
-                            .turn(Math.PI / 2)
+                            .turn(-Math.PI / 2)
                             .build());
                     spitPixel(0.35);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
@@ -167,7 +153,7 @@ public class blueBottom extends LinearOpMode {
                 case LEFT:
                     telemetry.addData("Dectected", result);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .forward(28)
+                            .back(28)
                             .turn(-Math.PI / 2)
                             .build());
 
@@ -176,7 +162,7 @@ public class blueBottom extends LinearOpMode {
                             .back(1)
                             .strafeRight(13)
                             .turn(Math.PI)
-                            .back(82)
+                            .back(84)
                             .strafeRight(18)
                             .build());
                     dropPixel(d);
