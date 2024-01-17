@@ -19,9 +19,9 @@ public class BlueScanner extends OpenCvPipeline {
     Timer t = new Timer();
 
     // 320 x 240 Resolution
-    Rect leftROI = new Rect(new Point(0, 200), new Point(1280 / 4.0, 380));
-    Rect midROI = new Rect(new Point(1280 / 4.0, 200), new Point(2.5 * 1280 / 3.0, 380));
-    Rect rightROI = new Rect(new Point(2.5 * 1280 / 3.0, 200), new Point(1280, 380));
+    Rect leftROI = new Rect(new Point(0, 400), new Point(1280 / 4.0, 380));
+    Rect midROI = new Rect(new Point(1280 / 4.0, 400), new Point(2.5 * 1280 / 3.0, 380));
+    Rect rightROI = new Rect(new Point(2.5 * 1280 / 3.0, 400), new Point(1280, 380));
 
     private Barcode result = null;
     private Telemetry telemetry;

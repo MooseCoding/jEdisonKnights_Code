@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
@@ -167,7 +166,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
             br.setPower(rightBackPower * mult);
 
 
-            if (gamepad1.right_trigger > 0)
+            if (gamepad1.right_trigger > 0 && (p1C == -1 || p2C == -1))
                 in.setPower(-iP);
             else if (gamepad1.left_trigger > 0 )
                 in.setPower(iP);
@@ -359,6 +358,8 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                     color2 = "purple";
                     break;
             }
+
+
             telemetry.addData("am pos", am.getCurrentPosition());
             telemetry.addData("trues", leftReady);
             telemetry.addData("right", rightReady);
