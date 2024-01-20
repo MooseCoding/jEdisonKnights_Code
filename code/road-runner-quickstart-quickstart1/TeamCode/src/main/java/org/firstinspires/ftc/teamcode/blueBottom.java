@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -78,7 +77,7 @@ public class blueBottom extends LinearOpMode {
 
         pA.setDirection(DcMotor.Direction.FORWARD);
         r2.setDirection(Servo.Direction.REVERSE);
-        in.setDirection(DcMotor.Direction.REVERSE);
+        in.setDirection(DcMotor.Direction.FORWARD);
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
         d.setPoseEstimate(new Pose2d(-35, 72, -Math.PI / 2));
@@ -162,7 +161,7 @@ public class blueBottom extends LinearOpMode {
                             .back(1)
                             .strafeRight(13)
                             .turn(Math.PI)
-                            .back(84)
+                            .back(82)
                             .strafeRight(18)
                             .build());
                     dropPixel(d);

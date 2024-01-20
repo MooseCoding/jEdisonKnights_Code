@@ -182,10 +182,10 @@ public class motorTester extends LinearOpMode {
             telemetry.addData("am pos", am.getCurrentPosition());
 
             if (gamepad1.right_trigger > 0) {
-                b.setPosition(b.getPosition()+0.01);
+                b.setPosition(1);
             }
             else if (gamepad1.left_trigger > 0) {
-                b.setPosition(b.getPosition()-0.01);
+                b.setPosition(0);
             }
             telemetry.addLine();
             telemetry.addData("bell pos", b.getPosition());
