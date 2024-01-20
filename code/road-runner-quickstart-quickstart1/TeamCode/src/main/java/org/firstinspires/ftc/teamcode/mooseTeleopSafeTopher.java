@@ -5,9 +5,11 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
@@ -16,31 +18,23 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
     private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
     private RevColorSensorV3 c1, c2;
 
+    private final int kC = 0, kI = 0, kD = 0;
+
     private DcMotor br, fr, bl, fl, in, pA, am;
-    private double speedMulti = 1.0, mult = 1, iP = 0.45; //multiplier for running motors at speed
+    private double speedMulti = 1.0, mult = 1, iP = 0.45, startOfProgramTime = 0, cAngle, heading = 69420; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false;
     private Servo r1, r2, air, bell;
     private Rev2mDistanceSensor d1;
+
+    private IMU imu;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
      */
     @Override
     public void runOpMode() {
-        /*
-        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .setDrawTagID(true)
-                .setDrawTagOutline(true)
-                .build();
-        VisionPortal visionPortal = new VisionPortal.Bu10ilder()
-                .addProcessor(tagProcessor)
-                .setCamera(hardwareMap.get(WebcamName.class, "cam"))
-                .setCameraResolution(new Size(640, 480))
-                .build();
-
-         */
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT)));
 
         br = hardwareMap.get(DcMotor.class, "br");
         fr = hardwareMap.get(DcMotor.class, "fr");
@@ -56,7 +50,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
         d1 = hardwareMap.get(Rev2mDistanceSensor.class, "d1");
         c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
 
-
         fl.setDirection(DcMotor.Direction.REVERSE);
         bl.setDirection(DcMotor.Direction.REVERSE);
         fr.setDirection(DcMotor.Direction.FORWARD);
@@ -65,8 +58,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
         r2.setDirection(Servo.Direction.REVERSE);
         in.setDirection(DcMotor.Direction.REVERSE);
 
-
-
         lockedArm = false;
 
         double time = 0;
@@ -74,6 +65,8 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
+            startOfProgramTime = getRuntime();
+            cAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             boolean buttonPress = getRuntime() >= 0.2 + time;
             if (buttonPress) {
                 if (gamepad1.right_bumper) {
@@ -184,12 +177,95 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 leftBackPower /= max;
                 rightBackPower /= max;
             }
-
+            /*
+            if (axial > 0.1 && lateral < 0.1 && yaw < 0.1) {
+                if (heading == -69420)
+                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                else {
+                    if (cAngle != heading) {
+                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
+                        if (cAngle > heading) {
+                            fr.setPower(1-output);
+                            fl.setPower(1);
+                            br.setPower(1-output);
+                            bl.setPower(1);
+                        }
+                        else {
+                            fr.setPower(1);
+                            fl.setPower(1-output);
+                            br.setPower(1);
+                            br.setPower(1-output);
+                        }
+                    }
+            }
+            else if (axial < -0.1 && lateral < 0.1 && yaw < 0.1) {
+                if (heading == -69420)
+                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                else {
+                    if (cAngle != heading) {
+                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
+                        if (cAngle > heading) {
+                            fr.setPower(-1+output);
+                            fl.setPower(-1);
+                            br.setPower(-1+output);
+                            bl.setPower(-1);
+                        }
+                        else {
+                            fr.setPower(-1);
+                            fl.setPower(-1+output);
+                            br.setPower(-1);
+                            br.setPower(-1+output);
+                        }
+                    }
+            }
+            else if (lateral > 0.1 && axial < 0.1 && yaw < 0.1) {
+                if (heading == -69420)
+                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                else {
+                    if (cAngle != heading) {
+                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
+                        if (cAngle > heading) {
+                            fr.setPower(-1+output);
+                            fl.setPower(1);
+                            br.setPower(-1+output);
+                            bl.setPower(1);
+                        }
+                        else {
+                            fr.setPower(-1);
+                            fl.setPower(1-output);
+                            br.setPower(-1);
+                            br.setPower(1-output);
+                        }
+                    }
+            }
+            else if (lateral < -0.1 && axial < 0.1 && yaw < 0.1) {
+                if (heading == -69420)
+                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                else {
+                    if (cAngle != heading) {
+                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
+                        if (cAngle > heading) {
+                            fr.setPower(1-output);
+                            fl.setPower(-1);
+                            br.setPower(1-output);
+                            bl.setPower(-1);
+                        }
+                        else {
+                            fr.setPower(1);
+                            fl.setPower(-1+output);
+                            br.setPower(1);
+                            br.setPower(-1+output);
+                        }
+                    }
+            }
+             */
+            //else {
+            heading = -69420;
             fl.setPower(leftFrontPower * mult);
             bl.setPower(leftBackPower * mult);
             fr.setPower(rightFrontPower * mult);
             br.setPower(rightBackPower * mult);
-
+            //}
 
             if (gamepad1.right_trigger > 0 && !lockedArm)
                 in.setPower(-iP);
@@ -228,7 +304,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                            am.setTargetPosition(-70);
+                            am.setTargetPosition(-60);
                         am.setPower(0.4);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
