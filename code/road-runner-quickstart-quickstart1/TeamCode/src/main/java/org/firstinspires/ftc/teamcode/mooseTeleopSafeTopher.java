@@ -21,7 +21,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
     private final int kC = 0, kI = 0, kD = 0;
 
     private DcMotor br, fr, bl, fl, in, pA, am;
-    private double speedMulti = 1.0, mult = 1, iP = 0.45, startOfProgramTime = 0, cAngle, heading = 69420; //multiplier for running motors at speed
+    private double speedMulti = 1.0, mult = 1, iP = 0.45; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false;
     private Servo r1, r2, air, bell;
     private Rev2mDistanceSensor d1;
@@ -65,8 +65,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            startOfProgramTime = getRuntime();
-            cAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             boolean buttonPress = getRuntime() >= 0.2 + time;
             if (buttonPress) {
                 if (gamepad1.right_bumper) {
@@ -177,94 +175,10 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 leftBackPower /= max;
                 rightBackPower /= max;
             }
-            /*
-            if (axial > 0.1 && lateral < 0.1 && yaw < 0.1) {
-                if (heading == -69420)
-                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                else {
-                    if (cAngle != heading) {
-
-                        if (cAngle > heading) {
-                            fr.setPower(1-output);
-                            fl.setPower(1);
-                            br.setPower(1-output);
-                            bl.setPower(1);
-                        }
-                        else {
-                            fr.setPower(1);
-                            fl.setPower(1-output);
-                            br.setPower(1);
-                            br.setPower(1-output);
-                        }
-                    }(time
-            }
-            else if (axial < -0.1 && lateral < 0.1 && yaw < 0.1) {
-                if (heading == -69420)
-                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                else {
-                    if (cAngle != heading) {
-
-                            fr.setPower(-1+output);
-                            fl.setPower(-1);
-                            br.setPower(-1+output);
-                            bl.setPower(-1);
-                        }
-                        else {
-                            fr.setPower(-1);
-                            fl.setPower(-1+output);
-                            br.setPower(-1);
-                            br.setPower(-1+output);
-                        }
-                    }
-            }
-            else if (lateral > 0.1 && axial < 0.1 && yaw < 0.1) {
-                if (heading == -69420)
-                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                else {
-                    if (cAngle != heading) {
-
-                        if (cAngle > heading) {
-                            fr.setPower(-1+output);
-                            fl.setPower(1);
-                            br.setPower(-1+output);
-                            bl.setPower(1);
-                        }
-                        else {
-                            fr.setPower(-1);
-                            fl.setPower(1-output);
-                            br.setPower(-1);
-                            br.setPower(1-output);
-                        }
-                    }
-            }
-            else if (lateral < -0.1 && axial < 0.1 && yaw < 0.1) {
-                if (heading == -69420)
-                    heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                else {
-                    if (cAngle != heading) {
-
-                        if (cAngle > heading) {
-                            fr.setPower(1-output);
-                            fl.setPower(-1);
-                            br.setPower(1-output);
-                            bl.setPower(-1);
-                        }
-                        else {
-                            fr.setPower(1);
-                            fl.setPower(-1+output);
-                            br.setPower(1);
-                            br.setPower(-1+output);
-                        }
-                    }
-            }
-             */
-            //else {
-            heading = -69420;
             fl.setPower(leftFrontPower * mult);
             bl.setPower(leftBackPower * mult);
             fr.setPower(rightFrontPower * mult);
             br.setPower(rightBackPower * mult);
-            //}
 
             if (gamepad1.right_trigger > 0 && !lockedArm)
                 in.setPower(-iP);
@@ -303,7 +217,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                            am.setTargetPosition(-60);
+                            am.setTargetPosition(-80);
                         am.setPower(0.4);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
@@ -342,8 +256,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     break;
                 case 2:
                     if (armReset) {
-
-
                         pA.setTargetPosition(2532);
                         pA.setPower(0.6);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -353,7 +265,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armPos = 2;
                     }
-                    if (pA.getCurrentPosition() >= 2180 && am.getCurrentPosition() >= 165) {
+                    if (pA.getCurrentPosition() >= 2180 && am.getCurrentPosition() >= 160) {
                         arm++;
                     }
                     break;

@@ -15,7 +15,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
     private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
     private RevColorSensorV3 c1, c2;
     private DcMotor br, fr, bl, fl, in, pA, am;
-    private double speedMulti = 1.0, mult = 1, iP = 0.6; //multiplier for running motors at speed
+    private double speedMulti = 1.0, mult = 1, iP = 0.6, bellT = 0; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false;
     private Servo r1, r2, air, bell;
     private Rev2mDistanceSensor d1;
@@ -53,6 +53,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
         c1 = hardwareMap.get(RevColorSensorV3.class, "c1");
         d1 = hardwareMap.get(Rev2mDistanceSensor.class, "d1");
         c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
+        bell = hardwareMap.get(Servo.class, "bell");
 
 
         fl.setDirection(DcMotor.Direction.REVERSE);
@@ -199,7 +200,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                     if (armReset) {
                         r1.setPosition(0.126);
                         r2.setPosition(0.13);
-                        am.setTargetPosition(-120);
+                        am.setTargetPosition(-100);
                         am.setPower(0.6);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         pA.setTargetPosition(490);
@@ -215,17 +216,17 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                        am.setTargetPosition(-60);
-                        am.setPower(0.1);
+                        am.setTargetPosition(-45);
+                        am.setPower(0.8);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                    if (am.getCurrentPosition() >= -110) {
-                        pA.setTargetPosition(0);
-                        pA.setPower(0.3);
+                    if (am.getCurrentPosition() >= -47) {
+                        pA.setTargetPosition(100);
+                        pA.setPower(0.2);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                     }
-                    if (pA.getCurrentPosition() <= 30) {
+                    if (pA.getCurrentPosition() <= 110) {
                         arm++;
                     }
                     break;
@@ -260,7 +261,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                         armReset = true;
                     }
 
-                    if (pA.getCurrentPosition() >= 2380 && am.getCurrentPosition() >= 180) {
+                    if (pA.getCurrentPosition() >= 2380 && am.getCurrentPosition() >= 160) {
                         arm++;
                     }
                     break;
@@ -357,6 +358,16 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                 case 3:
                     color2 = "purple";
                     break;
+            }
+            if (gamepad1.touchpad_finger_1 || gamepad1.touchpad_finger_2) {
+                if (bell.getPosition() == 0) {
+                    bellT = getRuntime();
+                }
+                bell.setPosition(0);
+                if (bellT + 0.5 > getRuntime()) {
+                    bell.setPosition(1);
+                }
+
             }
 
 

@@ -21,9 +21,9 @@ public class RedScanner extends OpenCvPipeline {
     Mat rightMat = new Mat();
 
     // 320 x 240 Resolution
-    Rect leftROI = new Rect(new Point(0, 200), new Point(1280 / 4.0, 380));
-    Rect midROI = new Rect(new Point(1280 / 4.0, 200), new Point(2.5 * 1280 / 3.0, 380));
-    Rect rightROI = new Rect(new Point(2.5 * 1280 / 3.0, 200), new Point(1280, 380));
+    Rect leftROI = new Rect(new Point(0, 600), new Point(1280/10.0, 250));
+    Rect midROI = new Rect(new Point(1280 / 10.0, 600), new Point(2 * 1280 / 3.0, 250));
+    Rect rightROI = new Rect(new Point(2 * 1280 / 3.0, 600), new Point(1280, 250));
 
     private Barcode result = null;
     private Telemetry telemetry;
@@ -59,30 +59,33 @@ public class RedScanner extends OpenCvPipeline {
         midMat.release();
         rightMat.release();
 
-        double maxValue = Math.max(leftValue, Math.max(midValue, rightValue));
+        double maxValue = Math.max(leftValue, Math.max(midValue+100000, rightValue));
+        telemetry.addData("max value", maxValue);
         Scalar matchColor = new Scalar(0, 255, 0);
         Scalar mismatchColor = new Scalar(255, 0, 0);
 
-        if (maxValue == leftValue) {
-            result = Barcode.LEFT;
-            Imgproc.rectangle(input, leftROI, matchColor);
+        if (maxValue == rightValue) {
+            result = Barcode.RIGHT;
+            Imgproc.rectangle(input, leftROI, mismatchColor);
             Imgproc.rectangle(input, midROI, mismatchColor);
-            Imgproc.rectangle(input, rightROI, mismatchColor);
-        } else if (maxValue == midValue) {
+            Imgproc.rectangle(input, rightROI, matchColor);
+        } else if (maxValue-100000 == midValue && maxValue != 100000) {
             result = Barcode.MIDDLE;
             Imgproc.rectangle(input, leftROI, mismatchColor);
             Imgproc.rectangle(input, midROI, matchColor);
             Imgproc.rectangle(input, rightROI, mismatchColor);
         } else {
-            result = Barcode.RIGHT;
-            Imgproc.rectangle(input, leftROI, mismatchColor);
+            result = Barcode.LEFT;
+            Imgproc.rectangle(input, leftROI, matchColor);
             Imgproc.rectangle(input, midROI, mismatchColor);
-            Imgproc.rectangle(input, rightROI, matchColor);
+            Imgproc.rectangle(input, rightROI, mismatchColor);
         }
 
         telemetry.addData("Barcode", result.toString().toLowerCase());
         telemetry.update();
-
+        if (rightValue * 2 >= midValue && rightValue > 1000000) {
+            result = Barcode.LEFT;
+        }
         return input;
     }
 
