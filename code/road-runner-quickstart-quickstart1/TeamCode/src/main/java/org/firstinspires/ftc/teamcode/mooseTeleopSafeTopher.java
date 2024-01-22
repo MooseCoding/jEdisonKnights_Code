@@ -183,7 +183,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 else {
                     if (cAngle != heading) {
-                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
+
                         if (cAngle > heading) {
                             fr.setPower(1-output);
                             fl.setPower(1);
@@ -196,15 +196,14 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                             br.setPower(1);
                             br.setPower(1-output);
                         }
-                    }
+                    }(time
             }
             else if (axial < -0.1 && lateral < 0.1 && yaw < 0.1) {
                 if (heading == -69420)
                     heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 else {
                     if (cAngle != heading) {
-                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
-                        if (cAngle > heading) {
+
                             fr.setPower(-1+output);
                             fl.setPower(-1);
                             br.setPower(-1+output);
@@ -223,7 +222,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 else {
                     if (cAngle != heading) {
-                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
+
                         if (cAngle > heading) {
                             fr.setPower(-1+output);
                             fl.setPower(1);
@@ -243,7 +242,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 else {
                     if (cAngle != heading) {
-                        int output = (cAngle-heading)*kC+(getRuntime()-startOfProgramTime)*kI*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate+kD*imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate/(getRuntime() - startOfProgramTime);;
+
                         if (cAngle > heading) {
                             fr.setPower(1-output);
                             fl.setPower(-1);
