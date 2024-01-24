@@ -64,12 +64,12 @@ public class RedScanner extends OpenCvPipeline {
         Scalar matchColor = new Scalar(0, 255, 0);
         Scalar mismatchColor = new Scalar(255, 0, 0);
 
-        if (maxValue == rightValue) {
+        if (maxValue == rightValue && rightValue > 2000000) {
             result = Barcode.RIGHT;
             Imgproc.rectangle(input, leftROI, mismatchColor);
             Imgproc.rectangle(input, midROI, mismatchColor);
             Imgproc.rectangle(input, rightROI, matchColor);
-        } else if (maxValue-100000 == midValue && maxValue != 100000) {
+        } else if (maxValue-100000 == midValue && maxValue != 100000 && midValue > 2000000) {
             result = Barcode.MIDDLE;
             Imgproc.rectangle(input, leftROI, mismatchColor);
             Imgproc.rectangle(input, midROI, matchColor);
@@ -83,9 +83,6 @@ public class RedScanner extends OpenCvPipeline {
 
         telemetry.addData("Barcode", result.toString().toLowerCase());
         telemetry.update();
-        if (rightValue * 2 >= midValue && rightValue > 1000000) {
-            result = Barcode.LEFT;
-        }
         return input;
     }
 

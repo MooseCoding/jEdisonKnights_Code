@@ -61,12 +61,12 @@ public class BlueScanner extends OpenCvPipeline {
         Scalar matchColor = new Scalar(0, 255, 0);
         Scalar mismatchColor = new Scalar(255, 0, 0);
 
-        if (maxValue == rightValue && rightValue > 5000) {
+        if (maxValue == rightValue && (rightValue < 1500000 || midValue > 1000000)) {
             result = Barcode.RIGHT;
             Imgproc.rectangle(input, leftROI, mismatchColor);
             Imgproc.rectangle(input, midROI, mismatchColor);
             Imgproc.rectangle(input, rightROI, matchColor);
-        } else if (maxValue == midValue && rightValue < 100000 && midValue > 5000) {
+        } else if ((maxValue == midValue && rightValue < 100000 && midValue > 5000 ) || leftValue < 7000) {
             result = Barcode.MIDDLE;
             Imgproc.rectangle(input, leftROI, mismatchColor);
             Imgproc.rectangle(input, midROI, matchColor);
