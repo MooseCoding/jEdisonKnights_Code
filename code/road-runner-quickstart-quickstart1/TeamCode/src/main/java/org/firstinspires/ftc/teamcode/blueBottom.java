@@ -48,7 +48,9 @@ public class blueBottom extends LinearOpMode {
         while (t + 2 > getRuntime());
 
         d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                .forward(2)
+                .forward(1.2)
+                        .back(0.2)
+
                 .build());
 
         am.setTargetPosition(0);
@@ -80,7 +82,7 @@ public class blueBottom extends LinearOpMode {
         in.setDirection(DcMotor.Direction.FORWARD);
 
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
-        d.setPoseEstimate(new Pose2d(-35, 72, -Math.PI / 2));
+        d.setPoseEstimate(new Pose2d(-35, 72, Math.PI / 2));
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
@@ -111,18 +113,20 @@ public class blueBottom extends LinearOpMode {
                 case RIGHT:
                     telemetry.addData("Dectected", result);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(28)
+                            .back(29)
                             .turn(-Math.PI / 2)
+                                    .back(4)
+                                    .forward(4.7)
                             .build());
-                    spitPixel(0.35);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeLeft(13)
-                            .back(82)
-                            .strafeRight(9.4)
+                            .strafeRight(13)
+                                    .turn(Math.PI)
+                            .back(78.7)
+                            .strafeRight(8.5)
                             .build());
                     dropPixel(d);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeLeft(11)
+                            .strafeLeft(10)
                             .back(9)
                             .build());
                     break;
@@ -130,14 +134,16 @@ public class blueBottom extends LinearOpMode {
                     d.setPoseEstimate(d.getPoseEstimate());
                     d.followTrajectorySequence(
                             d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                    .back(50)
+                                    .back(31.4)
+                                    .forward(10)
+                                    .strafeLeft(12)
+                                    .back(33.4)
+                                    .strafeRight(12)
                                     .build());
-                    spitPixel(0.35);
                     d.updatePoseEstimate();
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(1)
                             .turn(Math.PI / 2)
-                            .back(81.2)
+                            .back(80.4)
                             .strafeRight(14)
                             .build());
                     dropPixel(d);
@@ -152,22 +158,21 @@ public class blueBottom extends LinearOpMode {
                 case LEFT:
                     telemetry.addData("Dectected", result);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(28)
-                            .turn(-Math.PI / 2)
+                            .back(29)
+                            .turn(Math.PI / 2)
+                                    .back(4)
+                                    .forward(4.8)
                             .build());
 
-                    spitPixel(0.35);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(1)
-                            .strafeRight(13)
-                            .turn(Math.PI)
-                            .back(82)
-                            .strafeRight(18)
+                            .strafeLeft(13)
+                            .back(81.9)
+                            .strafeRight(17.4)
                             .build());
                     dropPixel(d);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeLeft(18)
-                            .back(9)
+                            .strafeLeft(19)
+                            .back(10)
                             .build());
                     break;
            }
