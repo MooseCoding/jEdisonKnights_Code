@@ -217,11 +217,11 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     if (p2C > -1)
                         pixeL = 1;
                     if (!armReset) {
-                            am.setTargetPosition(-80);
-                        am.setPower(0.4);
+                            am.setTargetPosition(-60);
+                        am.setPower(0.6);
                         am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-                    if (am.getCurrentPosition() >= -100) {
+                    if (am.getCurrentPosition() >= -80) {
                         pA.setTargetPosition(10);
                         pA.setPower(0.3);
                         pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);

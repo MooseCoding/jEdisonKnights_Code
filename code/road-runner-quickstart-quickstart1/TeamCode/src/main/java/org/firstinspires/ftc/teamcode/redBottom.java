@@ -109,66 +109,65 @@ public class redBottom extends LinearOpMode {
 
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
                             .strafeRight(1)
-                            .back(31.5)
-                            .turn(Math.PI/2)
+                            .back(29)
+                            .turn(-Math.PI/2)
+                                    .back(5)
+                                    .forward(4.5)
                             .build());
 
-                    spitPixel(0.34);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .back(5)
-                            .turn(Math.PI/2)
-                            .strafeLeft(2)
-                            .forward(24)
-                            .turn(Math.PI/2)
-                            .back(92)
-                            .strafeLeft(17.9)
+                            .strafeRight(11.5)
+                            .back(82)
+                            .strafeLeft(17.7)
                             .build());
 
                     dropPixel(d);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeRight(18)
-                            .back(20)
+                            .strafeRight(18.2)
+                            .back(8)
                             .build());
+                    break;
                 case MIDDLE:
                     telemetry.addData("Dectected", "M");
                     d.setPoseEstimate(d.getPoseEstimate());
                     d.followTrajectorySequence(
                             d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                    .back(50)
+                                    .back(30)
+                                    .forward(5)
+                                    .strafeRight(10)
+                                    .turn(-Math.PI/2)
+                                    .strafeRight(15)
                                     .build());
-                    spitPixel(0.33);
                     d.updatePoseEstimate();
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                    .back(3)
-                            .turn(-Math.PI / 2)
-
-                            .back(82)
-                            .strafeLeft(16)
+                            .back(81.9+19.2)
+                            .strafeLeft(15)
                             .build());
                     dropPixel(d);
                     d.updatePoseEstimate();
                     telemetry.addData("current pos", d.getPoseEstimate());
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeRight(14)
+                            .strafeRight(16)
                             .back(8)
                             .build());
                     break;
                 case LEFT: // red left
                     telemetry.addData("Dectected", "L");
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                    .back(28)
-                                    .turn(-Math.PI/2)
+                                    .back(29)
+                                    .turn(Math.PI/2)
+                                    .back(5)
+                                    .forward(5)
+                                    .strafeLeft(15)
+                                    .turn(Math.PI)
                             .build());
-
-                    spitPixel(0.34);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                                    .strafeRight(14)
-                            .back(82)
-                            .strafeLeft(12)
+                            .back(79.8-1.5)
+                            .strafeLeft(11)
                             .build());
                     dropPixel(d);
                     d.followTrajectorySequence(d.trajectorySequenceBuilder(d.getPoseEstimate())
-                            .strafeRight(14)
+                            .strafeRight(15)
                             .back(7)
                             .build());
                     break;
