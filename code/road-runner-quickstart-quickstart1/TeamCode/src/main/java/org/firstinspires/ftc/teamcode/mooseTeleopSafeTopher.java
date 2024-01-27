@@ -10,21 +10,21 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.subsystem.position;
 
 @TeleOp
 public class mooseTeleopSafeTopher extends LinearOpMode {
     private String color1, color2;
-    private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
+    private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0, pid = -1; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
     private RevColorSensorV3 c1, c2;
 
     private final int kC = 0, kI = 0, kD = 0;
 
     private DcMotor br, fr, bl, fl, in, pA, am;
-    private double speedMulti = 1.0, mult = 1, iP = 0.45; //multiplier for running motors at speed
-    private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false;
-    private Servo r1, r2, air, bell;
+    private double speedMulti = 1.0, mult = 1, iP = 0.45, t = 0, wantedAngle = 69420, error; //multiplier for running motors at speed
+    private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false, isTime = false;
+    private Servo r1, r2, air;
     private Rev2mDistanceSensor d1;
-
     private IMU imu;
 
     /**
@@ -58,6 +58,9 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
         in.setDirection(DcMotor.Direction.REVERSE);
 
         lockedArm = false;
+
+        SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
+        d.setPoseEstimate(position.getPosition());
 
         double time = 0;
         resetRuntime();
@@ -174,10 +177,78 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 leftBackPower /= max;
                 rightBackPower /= max;
             }
-            fl.setPower(leftFrontPower * mult);
-            bl.setPower(leftBackPower * mult);
-            fr.setPower(rightFrontPower * mult);
-            br.setPower(rightBackPower * mult);
+
+            if (axial == 1 && (lateral < 0.1 && lateral > -0.1) && (yaw < 0.1 && yaw > -0.1) && wantedAngle == 69420) {
+                wantedAngle = position.getHeading();
+                pid = 0;
+            }
+            else if (axial == -1 && (lateral < 0.1 && lateral > -0.1) && (yaw < 0.1 && yaw > -0.1) && wantedAngle == 69420) {
+                wantedAngle = position.getHeading();
+                pid = 1;
+            }
+            else if (lateral == -1 && (axial < 0.1 && axial > -0.1) && (yaw < 0.1 && yaw > -0.1) && wantedAngle == 69420) {
+                wantedAngle = position.getHeading();
+                pid = 2;
+            }
+            else if (lateral == 1 && (axial < 0.1 && axial > -0.1) && (yaw < 0.1 && yaw > -0.1) && wantedAngle == 69420) {
+                wantedAngle = position.getHeading();
+                pid = 3;
+            }
+            else {
+                wantedAngle = 69420;
+                fl.setPower(leftFrontPower * mult);
+                bl.setPower(leftBackPower * mult);
+                fr.setPower(rightFrontPower * mult);
+                br.setPower(rightBackPower * mult);
+            }
+            error = wantedAngle - position.getHeading();
+            switch (pid) {
+                case 0:
+                    if (error < 0.009) {
+                        fl.setPower(1);
+                        fr.setPower(1-kC*error);
+                        bl.setPower(1);
+                        br.setPower(1-kC*error);
+                    }
+                    else if (error > 0.009) {
+                        fl.setPower(1-kC*error);
+                        bl.setPower(1-kC*error);
+                        fr.setPower(1);
+                        br.setPower(1);
+
+                    }
+                    else {
+                        fl.setPower(1);
+                        fr.setPower(1);
+                        br.setPower(1);
+                        bl.setPower(1);
+                    }
+                    break;
+                case 1:
+                    if (error < 0.009) {
+                        fl.setPower(-1);
+                        fr.setPower(-1+kC*error);
+                        bl.setPower(-1);
+                        br.setPower(-1+kC*error);
+                    }
+                    else if (error > 0.009) {
+                        fl.setPower(-1+kC*error);
+                        bl.setPower(-1+kC*error);
+                        fr.setPower(-1);
+                        br.setPower(-1);
+
+                    }
+                    else {
+                        fl.setPower(-1);
+                        fr.setPower(-1);
+                        br.setPower(-1);
+                        bl.setPower(-1);
+                    }
+
+            }
+
+
+
 
             if (gamepad1.right_trigger > 0 && !lockedArm)
                 in.setPower(-iP);
@@ -237,18 +308,23 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                         rightReady = true;
 
                    if (leftReady && rightReady) {
-                        double t = getRuntime();
-                        while (t + 0.7  > getRuntime());
-                        pA.setTargetPosition(458);
-                        pA.setPower(1);
-                        pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        am.setTargetPosition(-100);
-                        am.setPower(0.6);
-                        am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armReset = true;
-                        leftReady = false;
-                        rightReady = false;
-                    }
+                       if (!isTime) {
+                           t = getRuntime();
+                           isTime = true;
+                       }
+                       if (t + 0.7 < getRuntime() && t != 0) {
+                           pA.setTargetPosition(458);
+                           pA.setPower(1);
+                           pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                           am.setTargetPosition(-100);
+                           am.setPower(0.6);
+                           am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                           armReset = true;
+                           leftReady = false;
+                           rightReady = false;
+                           t = 0;
+                       }
+                   }
                     if (pA.getCurrentPosition() >= 450 && am.getCurrentPosition() <= -98) {
                         arm++;
                     }
@@ -303,11 +379,16 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                         }
 
                     if (pixeR == 0 && pixeL == 0) {
-                        double t = getRuntime();
-                        while (t + 1 > getRuntime());
-                        leftArm=false;
-                        arm = -1;
+                        if (isTime) {
+                            t = getRuntime();
+                            isTime = false;
+                        }
+                        if (t + 1 < getRuntime() && t != 0) {
+                            leftArm = false;
+                            arm = -1;
+                        }
                     }
+
                     break;
             }
             if (c1.getRawLightDetected() > 400) {
@@ -385,6 +466,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     color2 = "purple";
                     break;
             }
+
             telemetry.addData("am pos", am.getCurrentPosition());
             telemetry.addData("trues", leftReady);
             telemetry.addData("right", rightReady);
@@ -399,6 +481,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
             telemetry.addData("Time", getRuntime());
 
             telemetry.update();
+            
 
         }
 
