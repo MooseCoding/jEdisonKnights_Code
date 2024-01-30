@@ -177,7 +177,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 leftBackPower /= max;
                 rightBackPower /= max;
             }
-
+            /*
             if (axial == 1 && (lateral < 0.1 && lateral > -0.1) && (yaw < 0.1 && yaw > -0.1) && wantedAngle == 69420) {
                 wantedAngle = position.getHeading();
                 pid = 0;
@@ -195,13 +195,14 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 pid = 3;
             }
             else {
-                wantedAngle = 69420;
+                */ 
+                //wantedAngle = 69420;
                 fl.setPower(leftFrontPower * mult);
                 bl.setPower(leftBackPower * mult);
                 fr.setPower(rightFrontPower * mult);
                 br.setPower(rightBackPower * mult);
-            }
-            error = wantedAngle - position.getHeading();
+            
+            /*error = wantedAngle - position.getHeading();
             switch (pid) {
                 case 0:
                     if (error < 0.009) {
@@ -246,6 +247,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     }
 
             }
+            */ 
 
 
 
