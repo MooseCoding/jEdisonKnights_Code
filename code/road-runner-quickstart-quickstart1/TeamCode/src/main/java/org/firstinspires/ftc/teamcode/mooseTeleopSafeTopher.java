@@ -20,6 +20,12 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
 
     private final int kC = 0, kI = 0, kD = 0;
 
+    private double[] times = new double[13];
+
+    for (int i = 0; i < 13; i++) {    
+        times[i] = 0 
+    }
+    
     private DcMotor br, fr, bl, fl, in, pA, am;
     private double speedMulti = 1.0, mult = 1, iP = 0.45, t = 0, wantedAngle = 69420, error; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false, isTime = false;
@@ -67,9 +73,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            boolean buttonPress = getRuntime() >= 0.2 + time;
-            if (buttonPress) {
-                if (gamepad1.right_bumper) {
+                if (gamepad1.right_bumper && times[0] + 0.2 < getRuntime()) {
                     if (mult == 1) {
                         mult = 0.4;
                         gamepad1.rumble(1, 0, 100);
@@ -77,16 +81,19 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                         mult = 1;
                         gamepad1.rumble(0, 1, 100);
                     }
+                    times[0] = getRuntime(); 
                 }
-                if (gamepad1.dpad_right && dpadUnlock) {
+                if (gamepad1.dpad_right && dpadUnlock && times[1] + 0.2 < getRuntime()) {
                     air.setPosition(0.2);
+                    times[1] = getRuntime(); 
                 }
 
-                if (gamepad1.dpad_left && dpadUnlock) {
+                if (gamepad1.dpad_left && dpadUnlock && times[2] + 0.2 < getRuntime()) {
                     air.setPosition(0.3);
+                    times[2] = getRuntime(); 
                 }
 
-                if (gamepad1.dpad_up && dpadUnlock) {
+                if (gamepad1.dpad_up && dpadUnlock && times[3] + 0.2 < getRuntime()) {
                     arm = -2;
                     pA.setTargetPosition(2200);
                     pA.setPower(0.3);
@@ -95,38 +102,49 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     am.setTargetPosition(-40);
                     am.setPower(0.3);
                     am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+                    times[3] = getRuntime(); 
                 }
-                if (gamepad1.dpad_down && dpadUnlock) {
+                if (gamepad1.dpad_down && dpadUnlock && times[4] + 0.2 < getRuntime()) {
                     pA.setTargetPosition(400);
                     pA.setPower(1);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    times[4] = getRuntime();
                 }
-                if (gamepad1.triangle)
+                if (gamepad1.triangle && times[5] + 0.2 < getRuntime()) {
                     lockedArm = !lockedArm;
+                    times[5] = getRuntime(); 
+        }
 
-                if (gamepad1.circle && arm == 1) { //right
+                if (gamepad1.circle && arm == 1 && times[6] + 0.2 < getRuntime() ) { //right
                     r1.setPosition(0.04);
 
                     rightReady = true;
+                    times[6] = getRuntime(); 
                 }
 
-                if (gamepad1.square && arm == 1) {//left
+                if (gamepad1.square && arm == 1 && times[7] + 0.2 < getRuntime()) {//left
                     r2.setPosition(0.05);
                 leftReady = true;
+                    times[7] = getRuntime(); 
             }
 
-                if (gamepad1.dpad_up && !dpadUnlock)
+                if (gamepad1.dpad_up && !dpadUnlock && times[8] + 0.2 < getRuntime()) {
                     arm++;
+                    times[8] = getRuntime(); 
+                }
 
-                if (gamepad1.dpad_down && !dpadUnlock)
+                if (gamepad1.dpad_down && !dpadUnlock && times[9] + 0.2 < getRuntime()) {
                     arm--;
+                    times[9] = getRuntime(); 
+                }
 
 
-                if (gamepad1.dpad_left && !dpadUnlock)
+                if (gamepad1.dpad_left && !dpadUnlock && times[10] + 0.2 < getRuntime()) {
                     arm = -1;
+                    times[10] = getRuntime(); 
+                }
 
-                if (gamepad1.left_bumper && gamepad1.right_stick_button) {
+                if (gamepad1.left_bumper && gamepad1.right_stick_button && times[11] + 0.2 < getRuntime()) {
                     arm = -3;
                     am.setTargetPosition(0);
                     am.setPower(1);
@@ -134,16 +152,16 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     pA.setTargetPosition(0);
                     pA.setPower(1);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    times[11] = getRuntime(); 
                 }
 
-                if (gamepad1.left_stick_button && gamepad1.left_bumper) {
+                if (gamepad1.left_stick_button && gamepad1.left_bumper && times[12] + 0.2 < getRuntime()) {
                     pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    times[12] = getRuntime(); 
                 }
 
-                time = getRuntime();
-            }
-
+        
             if (lockedArm) {
                 if (d1.getDistance(DistanceUnit.CM) <= 15)
                     mult = 0.4;
