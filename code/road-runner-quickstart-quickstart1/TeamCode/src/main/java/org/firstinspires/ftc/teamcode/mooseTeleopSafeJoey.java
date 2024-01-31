@@ -359,7 +359,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                     color2 = "purple";
                     break;
             }
-            if (gamepad1.touchpad_finger_1 || gamepad1.touchpad_finger_2) {
+            if (gamepad1.touchpad_finger_1 || gamepad1.touchpad_finger_2 || gamepad1.left_stick_button || gamepad1.right_stick_button) {
                 if (bell.getPosition() == 0) {
                     bellT = getRuntime();
                 }
