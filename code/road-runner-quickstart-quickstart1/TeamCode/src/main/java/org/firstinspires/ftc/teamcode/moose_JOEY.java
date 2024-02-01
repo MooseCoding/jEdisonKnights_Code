@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
-public class mooseTeleopSafeJoey extends LinearOpMode {
+public class moose_JOEY extends LinearOpMode {
     private String color1, color2;
     private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
     private RevColorSensorV3 c1, c2;
@@ -25,7 +25,21 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
      */
     @Override
     public void runOpMode() {
-    
+        /*
+        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagID(true)
+                .setDrawTagOutline(true)
+                .build();
+        VisionPortal visionPortal = new VisionPortal.Bu10ilder()
+                .addProcessor(tagProcessor)
+                .setCamera(hardwareMap.get(WebcamName.class, "cam"))
+                .setCameraResolution(new Size(640, 480))
+                .build();
+
+         */
+
         br = hardwareMap.get(DcMotor.class, "br");
         fr = hardwareMap.get(DcMotor.class, "fr");
         bl = hardwareMap.get(DcMotor.class, "bl");
@@ -70,21 +84,25 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                         gamepad1.rumble(0, 1, 100);
                     }
                 }
-                if (gamepad1.triangle && (arm == -1 || arm == 1) {
+                if (gamepad1.dpad_left) {
+                    //change bell
+                }
+
+                if (gamepad1.triangle && arm == -1) {
                     arm++;
                 }
-                else if (gamepad1.cross) {
+
+                if (gamepad1.triangle && arm == 1) {
+                    arm++;
+                }
+                else if (gamepad1.cross && (arm == 1 || arm == 0)) {
                     arm = -1;
                     armReset = true;
                 }
 
-                if (gamepad1.dpad_left) {
-                    dpadUnlock = !dpadUnlock; 
+                if (gamepad1.dpad_right && dpadUnlock) {
+                    air.setPosition(0.3);
                 }
-
-                if (gamepad1.dpad_right) {
-                    air.setPosition(0.3)
-                        } 
 
                 if (gamepad1.dpad_up && dpadUnlock) {
                     arm = -2;
@@ -157,7 +175,24 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                 in.setPower(0);
 
 
+            //if (gamepad1.circle) {
+            //look for april tags on the left
+            //currentAprilTagID = tag.id();
+            //telemetry.addData("current tag left", currentAprilTagID);
+            //}
 
+            //if (gamepad1.square) {
+            //look for april tags on the right
+            //while (
+            //currentAprilTagID = tag.id();
+            //telemetry.addData("current tag right", currentAprilTagID);
+            //}
+
+            //if (gamepad1.cross) {
+            //go to selected april tag that is on the telemetry output
+            //aprilTheta = (int) Math.atan(tag.ftcPose.y / tag.ftcPose.x);
+            //aprilDistance = (int) Math.sqrt((tag.ftcPose.z * tag.ftcPose.z) + (tag.ftcPose.x * tag.ftcPose.x));
+            //}
 
 
             switch(arm) {
@@ -280,7 +315,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                 p2C =-1;
 
 
-            if (getRuntime() > 90)
+            if (getRuntime() > 90 || gamepad1.dpad_right)
                 dpadUnlock = true;
 
 
@@ -324,7 +359,7 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                     color2 = "purple";
                     break;
             }
-            if (gamepad1.touchpad_finger_1 || gamepad1.touchpad_finger_2) {
+            if (gamepad1.touchpad_finger_1 || gamepad1.touchpad_finger_2 || gamepad1.left_stick_button || gamepad1.right_stick_button) {
                 if (bell.getPosition() == 0) {
                     bellT = getRuntime();
                 }
@@ -333,10 +368,17 @@ public class mooseTeleopSafeJoey extends LinearOpMode {
                     bell.setPosition(1);
                 }
 
-            }    
+            }
+
+
+            telemetry.addData("am pos", am.getCurrentPosition());
+            telemetry.addData("trues", leftReady);
+            telemetry.addData("right", rightReady);
             telemetry.addData("is slow mode", mult==0.4);
+            telemetry.addData("locked arm", lockedArm);
             telemetry.addData("dpad unlocked", dpadUnlock);
             telemetry.addData("arm location", arm);
+            telemetry.addData("distance (cm)", d1.getDistance(DistanceUnit.CM));
             telemetry.addData("pixel count", p1+p2);
             telemetry.addData("right pixel", color1);
             telemetry.addData("left pixel", color2);

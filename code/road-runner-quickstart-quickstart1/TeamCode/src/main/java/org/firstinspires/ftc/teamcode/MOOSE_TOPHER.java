@@ -13,19 +13,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystem.position;
 
 @TeleOp
-public class mooseTeleopSafeTopher extends LinearOpMode {
+public class MOOSE_TOPHER extends LinearOpMode {
     private String color1, color2;
     private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0, pid = -1; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
     private RevColorSensorV3 c1, c2;
 
     private final int kC = 0, kI = 0, kD = 0;
 
-    private double[] times = new double[13];
+    private double[] times = new double[15];
 
-    for (int i = 0; i < 13; i++) {    
-        times[i] = 0 
-    }
-    
     private DcMotor br, fr, bl, fl, in, pA, am;
     private double speedMulti = 1.0, mult = 1, iP = 0.45, t = 0, wantedAngle = 69420, error; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false, isTime = false;
@@ -38,6 +34,10 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
      */
     @Override
     public void runOpMode() {
+        for (int i = 0; i < 15; i++) {
+            times[i] = 0;
+        }
+
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT)));
 
@@ -68,7 +68,6 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
         SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
         d.setPoseEstimate(position.getPosition());
 
-        double time = 0;
         resetRuntime();
 
         waitForStart();
@@ -282,7 +281,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                 arm=0;
             }
 
-            if (gamepad1.left_stick_button && buttonPress) {
+            if (gamepad1.left_stick_button) {
                 pixeL = 1;
                 pixeR = 1;
             }
@@ -365,7 +364,7 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                     }
                     break;
                 case 3:
-                    if (gamepad1.cross && buttonPress && lockedArm) {
+                    if (gamepad1.cross && times[15] + 0.2 < getRuntime() && lockedArm) {
                         if(armPos == 2) {
                             pA.setTargetPosition(2182);
                             pA.setPower(0.8);
@@ -386,16 +385,19 @@ public class mooseTeleopSafeTopher extends LinearOpMode {
                             pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             armPos = 1;
                         }
+                        times[15] = getRuntime();
                     }
 
-                        if (leftArm && gamepad1.circle && buttonPress && pixeR > -1 && lockedArm) {
+                        if (leftArm && gamepad1.circle && times[13] + 0.2 < getRuntime() && pixeR > -1 && lockedArm) {
                             r1.setPosition(0.13);
                             pixeR = 0;
+                            times[13] = getRuntime();
                         }
 
-                        if (leftArm && gamepad1.square && buttonPress && pixeL > -1 && lockedArm) {
+                        if (leftArm && gamepad1.square && times[14] + 0.2 < getRuntime() && pixeL > -1 && lockedArm) {
                             r2.setPosition(0.126);
                             pixeL = 0;
+                            times[14] = getRuntime();
                         }
 
                     if (pixeR == 0 && pixeL == 0) {
