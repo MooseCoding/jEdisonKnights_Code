@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.outoftheboxrobotics.photoncore.Photon;
+import com.outoftheboxrobotics.photoncore.hardware.PhotonLynxVoltageSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -13,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystem.position;
 
 @TeleOp
+@Photon
 public class MOOSE_TOPHER extends LinearOpMode {
     private String color1, color2;
     private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0, pid = -1; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
@@ -28,6 +31,8 @@ public class MOOSE_TOPHER extends LinearOpMode {
     private Servo r1, r2, air;
     private Rev2mDistanceSensor d1;
     private IMU imu;
+
+    private PhotonLynxVoltageSensor vS = hardwareMap.getAll(PhotonLynxVoltageSensor.class).iterator().next();
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
