@@ -8,6 +8,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -28,6 +29,8 @@ public class MOOSE_TOPHER extends LinearOpMode {
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false, isTime = false;
     private Servo r1, r2, air;
     private Rev2mDistanceSensor d1;
+
+    private Gamepad g = new Gamepad(), gC = new Gamepad();
     private IMU imu;
 
     private PhotonLynxVoltageSensor vS = hardwareMap.getAll(PhotonLynxVoltageSensor.class).iterator().next();
@@ -71,27 +74,30 @@ public class MOOSE_TOPHER extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-                if (gamepad1.right_bumper && !previousGamepad1.right_bumpter) {
+            g.copy(gC);
+            gC.copy(gamepad1);
+
+                if (gC.right_bumper && !g.right_bumper) {
                     if (mult == 1) {
                         mult = 0.4;
-                        gamepad1.rumble(1, 0, 100);
+                        gC.rumble(1, 0, 100);
                     } else {
                         mult = 1;
-                        gamepad1.rumble(0, 1, 100);
+                        gC.rumble(0, 1, 100);
                     }
             
                 }
-                if (gamepad1.dpad_right && dpadUnlock && !previousGamepad1.dpad_right)) {
+                if (gC.dpad_right && dpadUnlock && !g.dpad_right) {
                     air.setPosition(0.2);
             
                 }
 
-                if (gamepad1.dpad_left && dpadUnlock && !previousGamepad1.dpad_left) {
+                if (gC.dpad_left && dpadUnlock && !g.dpad_left) {
                     air.setPosition(0.3);
                 
                 }
 
-                if (gamepad1.dpad_up && dpadUnlock && !previousGampead1.dpad_up) {
+                if (gC.dpad_up && dpadUnlock && !g.dpad_up) {
                     arm = -2;
                     pA.setTargetPosition(2200);
                     pA.setPower(0.3);
@@ -102,47 +108,47 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     am.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 
                 }
-                if (gamepad1.dpad_down && dpadUnlock && !previousGamepad1.dpad_down) {
+                if (gC.dpad_down && dpadUnlock && !g.dpad_down) {
                     pA.setTargetPosition(400);
                     pA.setPower(1);
                     pA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                   
                 }
-                if (gamepad1.triangle && !previousGamepad1.triangle) {
+                if (gC.triangle && !g.triangle) {
                     lockedArm = !lockedArm;
                     
         }
 
-                if (gamepad1.circle && arm == 1 && !previousGamepad1.circle ) { //right
+                if (gC.circle && arm == 1 && !g.circle ) { //right
                     r1.setPosition(0.04);
 
                     rightReady = true;
                     
                 }
 
-                if (gamepad1.square && arm == 1 && !previousGamepad1.square) {//left
+                if (gC.square && arm == 1 && !g.square) {//left
                     r2.setPosition(0.05);
                 leftReady = true;
                   
             }
 
-                if (gamepad1.dpad_up && !dpadUnlock && !previousGamepad1.dpad_up) {
+                if (gC.dpad_up && !dpadUnlock && !g.dpad_up) {
                     arm++;
                    
                 }
 
-                if (gamepad1.dpad_down && !dpadUnlock && !previousGamepad1.dpad_down) {
+                if (gC.dpad_down && !dpadUnlock && !g.dpad_down) {
                     arm--;
                   
                 }
 
 
-                if (gamepad1.dpad_left && !dpadUnlock && !previousGamepad1.dpad_left) {
+                if (gC.dpad_left && !dpadUnlock && !g.dpad_left) {
                     arm = -1;
                  
                 }
 
-                if (gamepad1.left_bumper && gamepad1.right_stick_button && !previousGamepad1.left_bumper) {
+                if (gC.left_bumper && gC.right_stick_button && !g.left_bumper) {
                     arm = -3;
                     am.setTargetPosition(0);
                     am.setPower(1);
@@ -153,7 +159,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     
                 }
 
-                if (gamepad1.left_stick_button && gamepad1.left_bumper && !previousGamepad1.left_stick_button) {
+                if (gC.left_stick_button && gC.left_bumper && !g.left_stick_button) {
                     pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 
@@ -173,9 +179,9 @@ public class MOOSE_TOPHER extends LinearOpMode {
             //ignore every button input within a 0.2 sec timespan as its neglible to affect results
             double max;
 
-            double axial = -gamepad1.left_stick_y;
-            double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x;
+            double axial = -gC.left_stick_y;
+            double lateral = gC.left_stick_x;
+            double yaw = gC.right_stick_x;
 
             double leftFrontPower = (axial + lateral) + yaw;
             double rightFrontPower = (axial - lateral) - yaw;
@@ -268,19 +274,19 @@ public class MOOSE_TOPHER extends LinearOpMode {
 
 
 
-            if (gamepad1.right_trigger > 0 && !lockedArm)
+            if (gC.right_trigger > 0 && !lockedArm)
                 in.setPower(-iP);
-            else if (gamepad1.left_trigger > 0 && !lockedArm)
+            else if (gC.left_trigger > 0 && !lockedArm)
                 in.setPower(iP);
             else
                 in.setPower(0);
 
-            if (gamepad1.right_trigger > 0 && lockedArm && arm == -1) {
+            if (gC.right_trigger > 0 && lockedArm && arm == -1) {
                 leftArm = true;
                 arm=0;
             }
 
-            if (gamepad1.left_stick_button) {
+            if (gC.left_stick_button) {
                 pixeL = 1;
                 pixeR = 1;
             }
@@ -363,7 +369,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     }
                     break;
                 case 3:
-                    if (gamepad1.cross && !previousGamepad1.cross && lockedArm) {
+                    if (gC.cross && !g.cross && lockedArm) {
                         if(armPos == 2) {
                             pA.setTargetPosition(2182);
                             pA.setPower(0.8);
@@ -387,13 +393,13 @@ public class MOOSE_TOPHER extends LinearOpMode {
                       
                     }
 
-                        if (leftArm && gamepad1.circle && !previousGamepad1.circle && pixeR > -1 && lockedArm) {
+                        if (leftArm && gC.circle && !g.circle && pixeR > -1 && lockedArm) {
                             r1.setPosition(0.13);
                             pixeR = 0;
                            
                         }
 
-                        if (leftArm && gamepad1.square && !previousGamepad1.square && pixeL > -1 && lockedArm) {
+                        if (leftArm && gC.square && !g.square && pixeL > -1 && lockedArm) {
                             r2.setPosition(0.126);
                             pixeL = 0;
                          
@@ -443,7 +449,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
                 p2C =-1;
 
 
-            if (getRuntime() > 90 || gamepad1.dpad_right)
+            if (getRuntime() > 90 || gC.dpad_right)
                 dpadUnlock = true;
 
 
