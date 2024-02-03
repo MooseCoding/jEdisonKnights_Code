@@ -24,4 +24,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.14'
     implementation 'com.github.Thermal-Equilibrium:homeostasis-FTC:1.0.8'
+    implementation 'com.github.AlphaGo16439:AGDistanceLocalization:v1.0.1'
 }

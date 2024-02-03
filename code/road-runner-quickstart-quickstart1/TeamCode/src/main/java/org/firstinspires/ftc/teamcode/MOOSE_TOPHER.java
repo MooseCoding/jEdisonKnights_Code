@@ -8,21 +8,19 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.outoftheboxrobotics.photoncore.Photon;
 import com.outoftheboxrobotics.photoncore.hardware.PhotonLynxVoltageSensor;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.wolfpackmachina.bettersensors.Sensors.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystem.position;
 
 @TeleOp
 @Photon
 public class MOOSE_TOPHER extends LinearOpMode {
-
     private enum ARM_STATE {
         HOLD,
         GRAB,
@@ -54,13 +52,12 @@ public class MOOSE_TOPHER extends LinearOpMode {
     }
 
     private enum DRIVE_MODE {
+        INIT,
         LOCKED_ARM,
         UNLOCKED_ARM,
         ENDGAME,
         DPAD_STANDARD
     }
-
-
 
     private ARM_STATE arm_current_state;
 
@@ -80,7 +77,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
     private double mult = 1, t = 0, airTime = 0; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false, isTime = false;
     private Servo r1, r2, air;
-    private Rev2mDistanceSensor d1;
+    private DistanceSensor d1;
 
     private GamepadEx g = new GamepadEx(gamepad1);
 
@@ -124,7 +121,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
         r2 = hardwareMap.get(Servo.class, "r2");
         air = hardwareMap.get(Servo.class, "air");
         c1 = hardwareMap.get(RevColorSensorV3.class, "c1");
-        d1 = hardwareMap.get(Rev2mDistanceSensor.class, "d1");
+        d1 = hardwareMap.get(DistanceSensor.class, "d1");
         c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
 
         fl.setInverted(true); //reverse
@@ -144,20 +141,11 @@ public class MOOSE_TOPHER extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
-                if (RIGHT_BUMPER.wasJustPressed()) {
-                    switch (speed_current_state) {
-                        case SLOW:
-                            speed_current_state = SPEED_STATE.NORMAL;
-                            break;
-                        case NORMAL:
-                            speed_current_state = SPEED_STATE.SLOW;
-                            break;
-                    }
-                }
-
                 switch (drive_mode_current) {
+                    case INIT:
+                        while (!RIGHT_TRIGGER.wasJustPressed());
+                        break;
                     case ENDGAME:
-
                         if (DPAD_RIGHT.wasJustPressed()) {
                             airplane_current_state = AIRPLANE_STATE.LAUNCH;
                         }
@@ -195,10 +183,10 @@ public class MOOSE_TOPHER extends LinearOpMode {
                             pixeL = 1;
                             pixeR = 1;
                         }
-                        if (d1.getDistance(DistanceUnit.CM) <= 15)
+                        if (d1.getDistance()/10.0 <= 15)
                             speed_current_state = SPEED_STATE.BOARD;
 
-                        if (d1.getDistance(DistanceUnit.CM) > 15)
+                        if (d1.getDistance()/10.0 > 15)
                             speed_current_state = SPEED_STATE.NORMAL;
 
                         if (TRIANGLE.wasJustPressed()) {
@@ -523,12 +511,16 @@ public class MOOSE_TOPHER extends LinearOpMode {
 
             switch (speed_current_state) {
                 case NORMAL:
+                    if (RIGHT_BUMPER.wasJustPressed())
+                        speed_current_state = SPEED_STATE.SLOW;
                     fl.set(leftFrontPower);
                     bl.set(leftBackPower);
                     fr.set(rightFrontPower);
                     br.set(rightBackPower);
                     break;
                 case SLOW:
+                    if (RIGHT_BUMPER.wasJustPressed())
+                        speed_current_state = SPEED_STATE.NORMAL;
                     fl.set(leftFrontPower * mult);
                     bl.set(leftBackPower * mult);
                     fr.set(rightFrontPower * mult);
@@ -635,17 +627,11 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     break;
             }
 
-            telemetry.addData("am pos", am.getCurrentPosition());
-            telemetry.addData("trues", leftReady);
-            telemetry.addData("right", rightReady);
-            telemetry.addData("is slow mode", mult==0.4);
-            telemetry.addData("locked arm", lockedArm);
-            telemetry.addData("dpad unlocked", dpadUnlock);
-            telemetry.addData("arm location", arm);
-;            telemetry.addData("distance (cm)", d1.getDistance(DistanceUnit.CM));
+            telemetry.addData("distance (cm)", d1.getDistance()/10.0);
             telemetry.addData("pixel count", p1+p2);
             telemetry.addData("right pixel", color1);
             telemetry.addData("left pixel", color2);
+            telemetry.addData("Voltage", vS.getCachedVoltage());
             telemetry.addData("Time", getRuntime());
 
             telemetry.update();
