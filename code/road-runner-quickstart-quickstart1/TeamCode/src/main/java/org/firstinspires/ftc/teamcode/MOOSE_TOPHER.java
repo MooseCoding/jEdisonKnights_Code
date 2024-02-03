@@ -75,15 +75,13 @@ public class MOOSE_TOPHER extends LinearOpMode {
                 if (gC.right_bumper && !g.right_bumper) {
                     if (mult == 1) {
                         mult = 0.4;
-                        gC.rumble(1, 0, 100);
                     } else {
                         mult = 1;
-                        gC.rumble(0, 1, 100);
                     }
             
                 }
                 if (gC.dpad_right && dpadUnlock && !g.dpad_right) {
-                    air.setPosition(0.2);
+                    air.setPosition(0.2);0
             
                 }
 
@@ -143,7 +141,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
                  
                 }
 
-                if (gC.left_bumper && gC.right_stick_button && !g.left_bumper) {
+                if (gC.left_bumper && gC.right_stick_button && !g.left_bumper && !g.right_stick_button) {
                     arm = -3;
                     am.setTargetPosition(0);
                     am.setPower(1);
@@ -154,7 +152,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     
                 }
 
-                if (gC.left_stick_button && gC.left_bumper && !g.left_stick_button) {
+                if (gC.left_stick_button && gC.left_bumper && !g.left_stick_button && !g.left_bumper) {
                     pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 
@@ -443,8 +441,12 @@ public class MOOSE_TOPHER extends LinearOpMode {
             else
                 p2C =-1;
 
+            if (gC.dpad_right && !g.dpad_right) {
+                dpadUnlock = !dpadUnlock;
+            }
 
-            if (getRuntime() > 90 || gC.dpad_right)
+
+            if (getRuntime() > 90)
                 dpadUnlock = true;
 
 
