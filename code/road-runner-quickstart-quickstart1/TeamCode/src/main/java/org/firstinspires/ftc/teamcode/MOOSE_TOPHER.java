@@ -81,7 +81,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
             
                 }
                 if (gC.dpad_right && dpadUnlock && !g.dpad_right) {
-                    air.setPosition(0.2);0
+                    air.setPosition(0.2);
             
                 }
 
