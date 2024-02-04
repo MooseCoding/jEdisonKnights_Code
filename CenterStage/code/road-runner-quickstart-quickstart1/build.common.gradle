@@ -23,7 +23,7 @@ def useProguard = false
 
 android {
 
-    compileSdkVersion 29
+    compileSdkVersion 31
 
     signingConfigs {
         release {
@@ -58,7 +58,7 @@ android {
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 28
+        targetSdkVersion 31
         multiDexEnabled !useProguard
 
         /**

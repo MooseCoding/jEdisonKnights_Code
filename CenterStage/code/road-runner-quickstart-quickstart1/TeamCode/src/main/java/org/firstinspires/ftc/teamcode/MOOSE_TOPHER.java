@@ -12,6 +12,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.wolfpackmachina.bettersensors.Sensors.DistanceSensor;
@@ -74,6 +75,7 @@ public class MOOSE_TOPHER extends LinearOpMode {
     private RevColorSensorV3 c1, c2;
 
     private MotorEx br, fr, bl, fl, in, pA, am;
+    private DcMotorEx BR, FR, BL, FL, IN, PA, AM;
     private double mult = 1, t = 0, airTime = 0; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false, isTime = false;
     private Servo r1, r2, air;
@@ -117,6 +119,14 @@ public class MOOSE_TOPHER extends LinearOpMode {
         in = new MotorEx(hardwareMap, "intake");
         pA = new MotorEx(hardwareMap, "pA");
         am = new MotorEx(hardwareMap, "am");
+        BR = hardwareMap.get(DcMotorEx.class, "br");
+        FR = hardwareMap.get(DcMotorEx.class, "br");
+        BL = hardwareMap.get(DcMotorEx.class, "br");
+        FL = hardwareMap.get(DcMotorEx.class, "br");
+        IN = hardwareMap.get(DcMotorEx.class, "br");
+        AM = hardwareMap.get(DcMotorEx.class, "br");
+        PA = hardwareMap.get(DcMotorEx.class, "br");
+
         r1 = hardwareMap.get(Servo.class, "r1");
         r2 = hardwareMap.get(Servo.class, "r2");
         air = hardwareMap.get(Servo.class, "air");
