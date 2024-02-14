@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: org.firstinspires.ftc:Hardware:9.0.1@aar" external-system-id="GRADLE">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f18c681cbbb14051e59c4b7ff1519a1f/transformed/jetified-Hardware-9.0.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f18c681cbbb14051e59c4b7ff1519a1f/transformed/jetified-Hardware-9.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f18c681cbbb14051e59c4b7ff1519a1f/transformed/jetified-Hardware-9.0.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/Hardware/9.0.1/d5a2fbd8876d39ad1a6e26280760535efdf43bb5/Hardware-9.0.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/Hardware/9.0.1/b8b2a9e7888c482bdf4fffb31f134d8578a9b5d9/Hardware-9.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

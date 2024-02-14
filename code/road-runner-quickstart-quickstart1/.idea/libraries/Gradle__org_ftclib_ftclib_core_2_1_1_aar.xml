@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: org.ftclib.ftclib:core:2.1.1@aar" external-system-id="GRADLE">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/388a54f3ce3d69f020cfbf470e097e0b/transformed/jetified-core-2.1.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/388a54f3ce3d69f020cfbf470e097e0b/transformed/jetified-core-2.1.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/388a54f3ce3d69f020cfbf470e097e0b/transformed/jetified-core-2.1.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ftclib.ftclib/core/2.1.1/1c7a2d76a20f4b84ae746567e80527ed894ecd2e/core-2.1.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ftclib.ftclib/core/2.1.1/ecd4e9ceb25dd0b2a73d534da22e4322e66f42e5/core-2.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

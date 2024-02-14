@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.Eeshwar-Krishnan:PhotonFTC:main-SNAPSHOT@aar" external-system-id="GRADLE">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/51eaf495ba42d252629fb4659320b6d8/transformed/jetified-PhotonFTC-main-SNAPSHOT/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/51eaf495ba42d252629fb4659320b6d8/transformed/jetified-PhotonFTC-main-SNAPSHOT/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.Eeshwar-Krishnan/PhotonFTC/main-SNAPSHOT/5df403db5e5cf8e1070696885019aa82792b24dd/PhotonFTC-main-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
