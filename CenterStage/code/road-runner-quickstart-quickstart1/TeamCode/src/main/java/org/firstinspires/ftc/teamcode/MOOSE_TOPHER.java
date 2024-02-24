@@ -8,15 +8,16 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.outoftheboxrobotics.photoncore.Photon;
 import com.outoftheboxrobotics.photoncore.hardware.PhotonLynxVoltageSensor;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.wolfpackmachina.bettersensors.Sensors.DistanceSensor;
+import com.wolfpackmachina.bettersensors.Drivers.ColorSensorV3;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystem.position;
 
 @TeleOp
@@ -56,59 +57,62 @@ public class MOOSE_TOPHER extends LinearOpMode {
         INIT,
         LOCKED_ARM,
         UNLOCKED_ARM,
-        ENDGAME,
-        DPAD_STANDARD
     }
 
-    private ARM_STATE arm_current_state;
+    private enum DPAD_STATE {
+        DPAD_STANDARD,
+        ENDGAME
+    }
 
-    private AIRPLANE_STATE airplane_current_state;
+    private ARM_STATE arm_current_state = ARM_STATE.HOLD;
 
-    private INTAKE_STATE intake_current_state;
+    private AIRPLANE_STATE airplane_current_state = AIRPLANE_STATE.HOLD;
 
-    private SPEED_STATE speed_current_state;
+    private INTAKE_STATE intake_current_state = INTAKE_STATE.HOLD;
 
-    private DRIVE_MODE drive_mode_current;
+    private SPEED_STATE speed_current_state = SPEED_STATE.NORMAL;
+
+    private DRIVE_MODE drive_mode_current = DRIVE_MODE.INIT;
+
+    private DPAD_STATE dpad_current_state = DPAD_STATE.DPAD_STANDARD;
 
     private String color1, color2;
     private int armPos, arm = -1, p1C, p2C, p1, p2, pixeL = 0, pixeR = 0, pid = -1; //pixel 1/2 colors (-1 no pixel , 0 white, 1 green, 2 yellow, 3 purple)
-    private RevColorSensorV3 c1, c2;
+    private ColorSensorV3 c1, c2;
 
     private MotorEx br, fr, bl, fl, in, pA, am;
     private DcMotorEx BR, FR, BL, FL, IN, PA, AM;
     private double mult = 1, t = 0, airTime = 0; //multiplier for running motors at speed
     private boolean leftArm = false, planeActive = true, armReset = true, rightReady = false, leftReady = false,  lockedArm, dpadUnlock = false, isTime = false;
     private Servo r1, r2, air;
-    private DistanceSensor d1;
-
-    private GamepadEx g = new GamepadEx(gamepad1);
-
-    private ButtonReader TRIANGLE = new ButtonReader(g, GamepadKeys.Button.Y),
-     SQUARE = new ButtonReader(g, GamepadKeys.Button.X),
-     CIRCLE = new ButtonReader(g, GamepadKeys.Button.B),
-     CROSS = new ButtonReader(g, GamepadKeys.Button.A),
-     DPAD_UP = new ButtonReader(g, GamepadKeys.Button.DPAD_UP),
-     DPAD_DOWN = new ButtonReader(g, GamepadKeys.Button.DPAD_DOWN),
-     DPAD_LEFT = new ButtonReader(g, GamepadKeys.Button.DPAD_LEFT),
-     DPAD_RIGHT = new ButtonReader(g, GamepadKeys.Button.DPAD_RIGHT),
-     LEFT_STICK_BUTTON = new ButtonReader(g, GamepadKeys.Button.LEFT_STICK_BUTTON),
-     RIGHT_STICK_BUTTON = new ButtonReader(g, GamepadKeys.Button.RIGHT_STICK_BUTTON),
-     LEFT_BUMPER = new ButtonReader(g, GamepadKeys.Button.LEFT_BUMPER),
-     RIGHT_BUMPER = new ButtonReader(g, GamepadKeys.Button.RIGHT_BUMPER);
-
-    private TriggerReader RIGHT_TRIGGER = new TriggerReader(g, GamepadKeys.Trigger.RIGHT_TRIGGER),
-    LEFT_TRIGGER = new TriggerReader(g, GamepadKeys.Trigger.LEFT_TRIGGER);
-
+    private Rev2mDistanceSensor d1;
     private IMU imu;
-
-    private PhotonLynxVoltageSensor vS = hardwareMap.getAll(PhotonLynxVoltageSensor.class).iterator().next();
-
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
      */
     @Override
     public void runOpMode() {
+         GamepadEx g = new GamepadEx(gamepad1);
+         ButtonReader TRIANGLE = new ButtonReader(g, GamepadKeys.Button.Y),
+                SQUARE = new ButtonReader(g, GamepadKeys.Button.X),
+                CIRCLE = new ButtonReader(g, GamepadKeys.Button.B),
+                CROSS = new ButtonReader(g, GamepadKeys.Button.A),
+                DPAD_UP = new ButtonReader(g, GamepadKeys.Button.DPAD_UP),
+                DPAD_DOWN = new ButtonReader(g, GamepadKeys.Button.DPAD_DOWN),
+                DPAD_LEFT = new ButtonReader(g, GamepadKeys.Button.DPAD_LEFT),
+                DPAD_RIGHT = new ButtonReader(g, GamepadKeys.Button.DPAD_RIGHT),
+                LEFT_STICK_BUTTON = new ButtonReader(g, GamepadKeys.Button.LEFT_STICK_BUTTON),
+                RIGHT_STICK_BUTTON = new ButtonReader(g, GamepadKeys.Button.RIGHT_STICK_BUTTON),
+                LEFT_BUMPER = new ButtonReader(g, GamepadKeys.Button.LEFT_BUMPER),
+                RIGHT_BUMPER = new ButtonReader(g, GamepadKeys.Button.RIGHT_BUMPER);
+
+         TriggerReader RIGHT_TRIGGER = new TriggerReader(g, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                LEFT_TRIGGER = new TriggerReader(g, GamepadKeys.Trigger.LEFT_TRIGGER);
+
+        PhotonLynxVoltageSensor vS = hardwareMap.getAll(PhotonLynxVoltageSensor.class).iterator().next();
+
+
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT)));
 
@@ -130,9 +134,9 @@ public class MOOSE_TOPHER extends LinearOpMode {
         r1 = hardwareMap.get(Servo.class, "r1");
         r2 = hardwareMap.get(Servo.class, "r2");
         air = hardwareMap.get(Servo.class, "air");
-        c1 = hardwareMap.get(RevColorSensorV3.class, "c1");
-        d1 = hardwareMap.get(DistanceSensor.class, "d1");
-        c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
+        c1 = hardwareMap.get(ColorSensorV3.class, "c1");
+        d1 = hardwareMap.get(Rev2mDistanceSensor.class, "d1");
+        c2 = hardwareMap.get(ColorSensorV3.class, "c2");
 
         fl.setInverted(true); //reverse
         bl.setInverted(true); //reverse
@@ -140,9 +144,6 @@ public class MOOSE_TOPHER extends LinearOpMode {
         in.setInverted(true); //reverse
 
         lockedArm = false;
-
-        SampleMecanumDrive d = new SampleMecanumDrive(hardwareMap);
-        d.setPoseEstimate(position.getPosition());
 
         resetRuntime();
 
@@ -153,32 +154,16 @@ public class MOOSE_TOPHER extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
                 switch (drive_mode_current) {
                     case INIT:
-                        while (!RIGHT_TRIGGER.wasJustPressed());
-                        break;
-                    case ENDGAME:
-                        if (DPAD_RIGHT.wasJustPressed()) {
-                            airplane_current_state = AIRPLANE_STATE.LAUNCH;
+                        while (!RIGHT_TRIGGER.wasJustPressed()) {
+                            RIGHT_TRIGGER.readValue();
                         }
-
-                        if (DPAD_UP.wasJustPressed()) {
-                            arm_current_state = ARM_STATE.HANG;
-                        }
-                        if (DPAD_DOWN.wasJustPressed()) {
-                            arm_current_state = ARM_STATE.RISE;
-                        }
-                        if (DPAD_LEFT.wasJustPressed()) {
-                            drive_mode_current = DRIVE_MODE.DPAD_STANDARD;
-                        }
-                        break;
-                    case DPAD_STANDARD:
-                        if (DPAD_UP.wasJustPressed()) {
-                            arm_current_state = ARM_STATE.HOLD;
-                        }
-                        if (DPAD_LEFT.wasJustPressed()) {
-                            drive_mode_current = DRIVE_MODE.ENDGAME;
-                        }
+                        drive_mode_current = DRIVE_MODE.UNLOCKED_ARM;
                         break;
                     case UNLOCKED_ARM:
+                        RIGHT_TRIGGER.readValue();
+                        LEFT_TRIGGER.readValue();
+                        TRIANGLE.readValue();
+
                         if (RIGHT_TRIGGER.isDown() && !lockedArm)
                             intake_current_state = INTAKE_STATE.INTAKE;
                         else if (LEFT_TRIGGER.isDown() && !lockedArm)
@@ -189,14 +174,17 @@ public class MOOSE_TOPHER extends LinearOpMode {
                             drive_mode_current = DRIVE_MODE.LOCKED_ARM;
                         break;
                     case LOCKED_ARM:
+                        LEFT_STICK_BUTTON.readValue();
+                        TRIANGLE.readValue();
+
                         if (LEFT_STICK_BUTTON.wasJustPressed()) {
                             pixeL = 1;
                             pixeR = 1;
                         }
-                        if (d1.getDistance()/10.0 <= 15)
+                        if (d1.getDistance(DistanceUnit.CM)/10.0 <= 15)
                             speed_current_state = SPEED_STATE.BOARD;
 
-                        if (d1.getDistance()/10.0 > 15)
+                        if (d1.getDistance(DistanceUnit.CM)/10.0 > 15)
                             speed_current_state = SPEED_STATE.NORMAL;
 
                         if (TRIANGLE.wasJustPressed()) {
@@ -205,12 +193,45 @@ public class MOOSE_TOPHER extends LinearOpMode {
                         break;
                 }
 
+            switch(dpad_current_state) {
+                case ENDGAME:
+                    DPAD_RIGHT.readValue();
+                    DPAD_LEFT.readValue();
+                    DPAD_UP.readValue();
+                    DPAD_DOWN.readValue();
+
+                    if (DPAD_RIGHT.wasJustPressed()) {
+                        airplane_current_state = AIRPLANE_STATE.LAUNCH;
+                    }
+                    if (DPAD_UP.wasJustPressed()) {
+                        arm_current_state = ARM_STATE.HANG;
+                    }
+                    if (DPAD_DOWN.wasJustPressed()) {
+                        arm_current_state = ARM_STATE.RISE;
+                    }
+                    if (DPAD_LEFT.wasJustPressed()) {
+                        dpad_current_state = DPAD_STATE.DPAD_STANDARD;
+                    }
+                    break;
+                case DPAD_STANDARD:
+                    DPAD_UP.readValue();
+                    DPAD_LEFT.readValue();
+
+                    if (DPAD_UP.wasJustPressed()) {
+                        arm_current_state = ARM_STATE.HOLD;
+                    }
+                    if (DPAD_LEFT.wasJustPressed()) {
+                        dpad_current_state = DPAD_STATE.ENDGAME;
+                    }
+                    break;
+            }
+
 
             double max;
 
             double axial = -g.getLeftY();
-            double lateral = g.getLeftX();
-            double yaw = g.getRightX();
+            double lateral = -g.getLeftX();
+            double yaw = -g.getRightX();
 
             double leftFrontPower = (axial + lateral) + yaw;
             double rightFrontPower = (axial - lateral) - yaw;
@@ -301,6 +322,8 @@ public class MOOSE_TOPHER extends LinearOpMode {
 
             switch(arm_current_state) {
                 case HOLD:
+                    RIGHT_TRIGGER.readValue();
+
                     if (armReset) {
                         r1.setPosition(0.126);
                         r2.setPosition(0.13);
@@ -339,11 +362,15 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     }
                     break;
                 case WAIT:
+                    CIRCLE.readValue();
+
                     if (CIRCLE.wasJustPressed()) { //right
                         r1.setPosition(0.04);
                         rightReady = true;
 
                     }
+
+                    SQUARE.readValue();
 
                     if (SQUARE.wasJustPressed()) {//left
                         r2.setPosition(0.05);
@@ -394,6 +421,10 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     }
                     break;
                 case DEPLOY:
+                    CROSS.readValue();
+                    CIRCLE.readValue();
+                    SQUARE.readValue();
+
                     if (CROSS.wasJustPressed() && lockedArm) {
                         if(armPos == 2) {
                             pA.setTargetPosition(2182);
@@ -443,6 +474,8 @@ public class MOOSE_TOPHER extends LinearOpMode {
 
                     break;
                 case HANG:
+                    DPAD_DOWN.readValue();
+
                     arm = -2;
                     pA.setTargetPosition(2200);
                     pA.set(0.3);
@@ -450,12 +483,12 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     am.setTargetPosition(-40);
                     am.set(0.3);
 
-                    if (g.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+                    if (DPAD_DOWN.wasJustPressed()) {
                         arm_current_state = ARM_STATE.RISE;
                     }
                     break;
                 case RISE:
-                    if (vS.getCachedVoltage() < 11) {
+                    if (vS.getCachedVoltage() < 7) {
                         fl.set(0);
                         fr.set(0);
                         bl.set(0);
@@ -466,39 +499,53 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     pA.set(1);
                     break;
                 case ZERO_ARM:
-                    if (g.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0) {
+                    RIGHT_TRIGGER.readValue();
+                    LEFT_TRIGGER.readValue();
+                    CROSS.readValue();
+                    LEFT_BUMPER.readValue();
+                    LEFT_STICK_BUTTON.readValue();
+                    RIGHT_STICK_BUTTON.readValue();
+
+                    if (RIGHT_TRIGGER.wasJustPressed()) {
                         pA.setTargetPosition(pA.getCurrentPosition() + 10);
                         pA.set(1);
                     }
-                    else if (g.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0) {
+                    else if (LEFT_TRIGGER.wasJustPressed()) {
                         pA.setTargetPosition(pA.getCurrentPosition() - 10);
                         pA.set(1);
                     }
-                    if (g.getButton(GamepadKeys.Button.A)) {
+                    if (CROSS.wasJustPressed()) {
                         pA.resetEncoder();
                         am.resetEncoder();
                     }
-                    if (g.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON) && g.getButton(GamepadKeys.Button.LEFT_BUMPER))
+                    if (RIGHT_STICK_BUTTON.wasJustPressed() && LEFT_BUMPER.isDown())
                         arm_current_state = ARM_STATE.ZERO_CLAW;
-                    else if (g.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON) && g.getButton(GamepadKeys.Button.LEFT_BUMPER))
+                    else if (LEFT_STICK_BUTTON.wasJustPressed() && LEFT_BUMPER.isDown())
                         arm_current_state = ARM_STATE.HOLD;
                     break;
                 case ZERO_CLAW:
-                    if (g.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0) {
+                    RIGHT_TRIGGER.readValue();
+                    LEFT_TRIGGER.readValue();
+                    CROSS.readValue();
+                    LEFT_BUMPER.readValue();
+                    LEFT_STICK_BUTTON.readValue();
+                    RIGHT_STICK_BUTTON.readValue();
+
+                    if (RIGHT_TRIGGER.wasJustPressed()) {
                         am.setTargetPosition(am.getCurrentPosition() + 10);
                         am.set(1);
                     }
-                    else if (g.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0) {
+                    else if (LEFT_TRIGGER.wasJustPressed()) {
                         am.setTargetPosition(am.getCurrentPosition() - 10);
                         am.set(1);
                     }
-                    if (g.getButton(GamepadKeys.Button.A)) {
+                    if (CROSS.wasJustPressed()) {
                         am.resetEncoder();
                         am.resetEncoder();
                     }
-                    if (g.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON) && g.getButton(GamepadKeys.Button.LEFT_BUMPER))
+                    if (RIGHT_STICK_BUTTON.wasJustPressed() && LEFT_BUMPER.isDown())
                         arm_current_state = ARM_STATE.ZERO_ARM;
-                    else if (g.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON) && g.getButton(GamepadKeys.Button.LEFT_BUMPER))
+                    else if (LEFT_STICK_BUTTON.wasJustPressed() && LEFT_BUMPER.isDown())
                         arm_current_state = ARM_STATE.HOLD;
             }
 
@@ -521,6 +568,8 @@ public class MOOSE_TOPHER extends LinearOpMode {
 
             switch (speed_current_state) {
                 case NORMAL:
+                    RIGHT_BUMPER.readValue();
+
                     if (RIGHT_BUMPER.wasJustPressed())
                         speed_current_state = SPEED_STATE.SLOW;
                     fl.set(leftFrontPower);
@@ -529,6 +578,8 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     br.set(rightBackPower);
                     break;
                 case SLOW:
+                    RIGHT_BUMPER.readValue();
+
                     if (RIGHT_BUMPER.wasJustPressed())
                         speed_current_state = SPEED_STATE.NORMAL;
                     fl.set(leftFrontPower * mult);
@@ -562,42 +613,14 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     break;
             }
 
-            if (c1.getRawLightDetected() > 400) {
-                if (c1.getLightDetected() == 1)
-                    p1C = 0;
-
-                else if (c1.getRawLightDetected() > 1900 || c1.getLightDetected() < 0.5)
-                    p1C = 3;
-
-                else if (c1.green() >= c1.red() + c1.blue() || c1.getLightDetected() > 0.7)
-                    p1C = 1;
-
-                else
-                    p1C = 2;
-
-            }
-            else
-                p1C = -1;
-
-            if (c2.getRawLightDetected() > 300) {
-                if((c2.green() >= c2.red() + c2.blue() || c2.getLightDetected() >= 0.25)&& (c2.getRawLightDetected() < 750 && c2.getRawLightDetected() > 730) )
-                    p2C = 1;
-                else if (c2.getRawLightDetected() > 850)
-                    p2C = 0;
-                else if (c2.getRawLightDetected() > 600)
-                    p2C = 3;
-                else
-                    p2C = 2;
-            }
-            else
-                p2C =-1;
-
 
             if (getRuntime() > 90)
-                dpadUnlock = true;
+                dpad_current_state = DPAD_STATE.ENDGAME;
 
             p1 = 1;
             p2 = 1;
+            p1C = 0;
+            p2C = 0;
 
             switch (p1C) {
                 case -1:
@@ -637,10 +660,15 @@ public class MOOSE_TOPHER extends LinearOpMode {
                     break;
             }
 
-            telemetry.addData("distance (cm)", d1.getDistance()/10.0);
+            TRIANGLE.readValue();
+            RIGHT_BUMPER.readValue();
+
+            telemetry.addData("distance (cm)", d1.getDistance(DistanceUnit.CM)/10.0);
             telemetry.addData("pixel count", p1+p2);
             telemetry.addData("right pixel", color1);
             telemetry.addData("left pixel", color2);
+            telemetry.addData("y", TRIANGLE.wasJustPressed());
+            telemetry.addData("right bumper", RIGHT_BUMPER.wasJustPressed());
             telemetry.addData("Voltage", vS.getCachedVoltage());
             telemetry.addData("Time", getRuntime());
 

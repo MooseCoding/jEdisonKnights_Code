@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Size;
 
+import com.outoftheboxrobotics.photoncore.Photon;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,13 +11,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.wolfpackmachina.bettersensors.Drivers.ColorSensorV3;
+import com.wolfpackmachina.bettersensors.Sensors.ColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @TeleOp
-
+@Photon
 public class motorTester extends LinearOpMode {
 
     int aprilTheta;
@@ -36,7 +39,7 @@ public class motorTester extends LinearOpMode {
     private DcMotor am;
     private Servo r1, r2, air, b;
 
-    private RevColorSensorV3 c1, c2;
+    private ColorSensorV3 c1, c2;
     boolean speedMultiOn;
 
     double speedMulti;
@@ -68,8 +71,8 @@ public class motorTester extends LinearOpMode {
         bl = hardwareMap.get(DcMotor.class, "bl");
         fl = hardwareMap.get(DcMotor.class, "fl");
         i = hardwareMap.get(DcMotor.class, "intake");
-        c1 = hardwareMap.get(RevColorSensorV3.class, "c1");
-        c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
+        c1 = hardwareMap.get(ColorSensorV3.class, "c1");
+        c2 = hardwareMap.get(ColorSensorV3.class, "c2");
 
 
         am = hardwareMap.get(DcMotor.class, "am");
@@ -81,11 +84,9 @@ public class motorTester extends LinearOpMode {
 
         pA = hardwareMap.get(DcMotor.class, "pA");
         air = hardwareMap.get(Servo.class, "air");
-        b = hardwareMap.get(Servo.class, "bell");
         //pA2 = hardwareMap.get(DcMotor.class, "pA2"); //must be run at a negative power relative to pA1
         pA.setDirection(DcMotorSimple.Direction.FORWARD);
         //pA2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        b.setPosition(0);
 
         speedMulti = 1;
         speedMultiOn = false;
@@ -159,14 +160,8 @@ public class motorTester extends LinearOpMode {
             telemetry.addData(" encoder pos", pA.getCurrentPosition());
             telemetry.addData("am pos", am.getCurrentPosition());
 
-            if (gamepad1.right_trigger > 0) {
-                b.setPosition(1);
-            }
-            else if (gamepad1.left_trigger > 0) {
-                b.setPosition(0);
-            }
+
             telemetry.addLine();
-            telemetry.addData("bell pos", b.getPosition());
             telemetry.update();
         }
     }
