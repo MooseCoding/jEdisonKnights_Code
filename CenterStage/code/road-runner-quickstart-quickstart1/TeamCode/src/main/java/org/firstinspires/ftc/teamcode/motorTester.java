@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Size;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.outoftheboxrobotics.photoncore.Photon;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -27,16 +29,15 @@ public class motorTester extends LinearOpMode {
 
     IMU imu;//x-axis rotation = , y-axis rotation = , z-axis rotation
 
-    private DcMotor br;
+    private DcMotorEx br;
+    
+    private DcMotorEx fr;
+    private DcMotorEx bl;
+    private DcMotorEx fl;
 
-    private DcMotor i;
-    private DcMotor fr;
-    private DcMotor bl;
-    private DcMotor fl;
+    private DcMotorEx pA;
 
-    private DcMotor pA;
-
-    private DcMotor am;
+    private DcMotorEx am;
     private Servo r1, r2, air, b;
 
     private ColorSensorV3 c1, c2;
@@ -66,27 +67,23 @@ public class motorTester extends LinearOpMode {
                 = RevHubOrientationOnRobot.UsbFacingDirection.values();
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(logoFacingDirections[4], usbFacingDirections[0])));
 
-        br = hardwareMap.get(DcMotor.class, "br");
-        fr = hardwareMap.get(DcMotor.class, "fr");
-        bl = hardwareMap.get(DcMotor.class, "bl");
-        fl = hardwareMap.get(DcMotor.class, "fl");
-        i = hardwareMap.get(DcMotor.class, "intake");
-        c1 = hardwareMap.get(ColorSensorV3.class, "c1");
-        c2 = hardwareMap.get(ColorSensorV3.class, "c2");
+        fr = hardwareMap.get(DcMotorEx.class, "fr");
+        bl = hardwareMap.get(DcMotorEx.class, "bl");
+        br = hardwareMap.get(DcMotorEx.class, "br");
+        fl = hardwareMap.get(DcMotorEx.class, "fl");
 
-
-        am = hardwareMap.get(DcMotor.class, "am");
+        pA = hardwareMap.get(DcMotorEx.class, "pA");
+        am = hardwareMap.get(DcMotorEx.class, "am");
 
         r1 = hardwareMap.get(Servo.class, "r1");
         r2 = hardwareMap.get(Servo.class, "r2");
 
         r2.setDirection(Servo.Direction.REVERSE);
-
-        pA = hardwareMap.get(DcMotor.class, "pA");
+        
         air = hardwareMap.get(Servo.class, "air");
-        //pA2 = hardwareMap.get(DcMotor.class, "pA2"); //must be run at a negative power relative to pA1
-        pA.setDirection(DcMotorSimple.Direction.FORWARD);
-        //pA2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //pA2 = hardwareMap.get(DcMotorEx.class, "pA2"); //must be run at a negative power relative to pA1
+        
+        //pA2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         speedMulti = 1;
         speedMultiOn = false;
@@ -97,10 +94,6 @@ public class motorTester extends LinearOpMode {
         //servo 2 = fr
         //servo 3 = f
         while (opModeIsActive()) {
-            if(gamepad1.left_stick_button) {
-                pA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                am.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
             if(this.gamepad1.triangle) {
                 br.setPower(70);
                 for (int i = 0; i < 4000; i++) {
@@ -156,7 +149,6 @@ public class motorTester extends LinearOpMode {
             telemetry.addData("r stick y", gamepad1.right_stick_y);
             telemetry.addData("right trigger", gamepad1.right_trigger);
             telemetry.addData("left trigger", gamepad1.left_trigger);
-            telemetry.addData(" motor speed", pA.getPower());
             telemetry.addData(" encoder pos", pA.getCurrentPosition());
             telemetry.addData("am pos", am.getCurrentPosition());
 
