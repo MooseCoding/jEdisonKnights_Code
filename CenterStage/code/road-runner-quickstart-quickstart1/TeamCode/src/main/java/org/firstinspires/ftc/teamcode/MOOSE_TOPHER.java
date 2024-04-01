@@ -234,10 +234,10 @@ public class MOOSE_TOPHER extends LinearOpMode {
                 rightBackPower /= max;
             }
 
-            FL.setPower(leftFrontPower);
-            BL.setPower(leftBackPower);
-            FR.setPower(rightFrontPower);
-            BR.setPower(rightBackPower);
+            FL.setPower(leftFrontPower*mult);
+            BL.setPower(leftBackPower*mult);
+            FR.setPower(rightFrontPower*mult);
+            BR.setPower(rightBackPower*mult);
 
 
             switch(arm_current_state) {
@@ -488,24 +488,15 @@ public class MOOSE_TOPHER extends LinearOpMode {
                 case NORMAL:
                     if (gamepad1.right_bumper && !g_copy.right_bumper)
                         speed_current_state = SPEED_STATE.SLOW;
-                    FL.setPower(leftFrontPower);
-                    BL.setPower(leftBackPower);
-                    FR.setPower(rightFrontPower);
-                    BR.setPower(rightBackPower);
+                    mult = 1;
                     break;
                 case SLOW:
                     if (gamepad1.right_bumper && !g_copy.right_bumper)
                         speed_current_state = SPEED_STATE.NORMAL;
-                    FL.setPower(leftFrontPower * mult);
-                    BL.setPower(leftBackPower * mult);
-                    FR.setPower(rightFrontPower * mult);
-                    BR.setPower(rightBackPower * mult);
+                    mult = 0.4;
                     break;
                 case BOARD:
-                    FL.setPower(leftFrontPower * 0.2);
-                    BL.setPower(leftBackPower * 0.2);
-                    FR.setPower(rightFrontPower * 0.2);
-                    BR.setPower(rightBackPower * 0.2);
+                    mult = 0.2;
                     break;
             }
 
